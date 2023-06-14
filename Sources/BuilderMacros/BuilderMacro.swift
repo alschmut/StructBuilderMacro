@@ -75,11 +75,13 @@ public struct CustomBuilderMacro: PeerMacro {
         let buildFunctionReturnStatement = ReturnStmtSyntax(expression:
             ExprSyntax(FunctionCallExprSyntax(
                 calledExpression: IdentifierExprSyntax(identifier: structDeclaration.identifier.trimmed),
-                leftParen: .leftParenToken(trailingTrivia: .newline.appending(Trivia.spaces(4))),
+                leftParen: .leftParenToken(trailingTrivia: Trivia.spaces(4)),
                 argumentList: TupleExprElementListSyntax {
                     for member in members {
                         TupleExprElementSyntax(
-                            label: member.identifier.text,
+                            leadingTrivia: .newline,
+                            label: member.identifier,
+                            colon: TokenSyntax(TokenKind.colon, presence: .present),
                             expression: ExprSyntax(stringLiteral: member.identifier.text)
                         )
                     }
