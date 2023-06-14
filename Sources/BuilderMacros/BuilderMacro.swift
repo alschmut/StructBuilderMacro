@@ -34,26 +34,49 @@ public struct CustomBuilderMacro: PeerMacro {
         guard let structDeclaration = declaration.as(StructDeclSyntax.self) else {
             return []
         }
-//        let members = structDeclaration.memberBlock.members
-//        let caseDecls = members.compactMap { $0.decl.as(MemberDeclListSyntax.self) }
-//        let elements = caseDecls.flatMap { $0.elements }
+        let members = structDeclaration.memberBlock.members
+            .compactMap { $0.decl.as(VariableDeclSyntax.self)?.bindings.first }
+            .compactMap { $0.pattern.as(IdentifierPatternSyntax.self) }
 
-//        let structKeyword = SyntaxFactory.makeStructKeyword(trailingTrivia: .spaces(1))
-//
-//        let identifier = SyntaxFactory.makeIdentifier("Example", trailingTrivia: .spaces(1))
-//
-//        let leftBrace = SyntaxFactory.makeLeftBraceToken()
-//        let rightBrace = SyntaxFactory.makeRightBraceToken(leadingTrivia: .newlines(1))
-//        let members = MemberDeclBlockSyntax { builder in
-//            builder.useLeftBrace(leftBrace)
-//            builder.useRightBrace(rightBrace)
-//        }
-//
-//        let structureDeclaration = StructDeclSyntax { builder in
-//            builder.useStructKeyword(structKeyword)
-//            builder.useIdentifier(identifier)
-//            builder.useMembers(members)
-//        }
+        let identifier = TokenSyntax.identifier(structDeclaration.identifier.text + "Builder")
+            .with(\.trailingTrivia, .spaces(1))
+
+
+        var returnStatement = ReturnStmtSyntax()
+        returnStatement.expression = ExprSyntax(FunctionCallExprSyntax(
+            calledExpression: IdentifierExprSyntax(identifier: structDeclaration.identifier),
+            leftParen: "(\n",
+            argumentList: TupleExprElementListSyntax(
+                members.map { member in
+                    TupleExprElementSyntax(
+                        label: member.identifier.text,
+                        expression: ExprSyntax(stringLiteral: member.identifier.text)
+                    )
+                }
+            ),
+            rightParen: "\n)"
+        ))
+
+        let buildFunction = FunctionDeclSyntax(
+            identifier: .identifier("build"),
+            signature: FunctionSignatureSyntax(
+                input: ParameterClauseSyntax(parameterList: FunctionParameterListSyntax([])),
+                output: ReturnClauseSyntax(returnType: TypeSyntax(stringLiteral: structDeclaration.identifier.text))
+            )
+        ) {
+            CodeBlockItemListSyntax([
+                CodeBlockItemListSyntax.Element(
+                    item: CodeBlockItemListSyntax.Element.Item.stmt(StmtSyntax(returnStatement))
+                )
+            ])
+        }
+
+        let structureDeclaration = StructDeclSyntax(identifier: identifier, memberBlockBuilder: {
+            MemberDeclListSyntax([
+                MemberDeclListSyntax.Element(decl: buildFunction)
+            ])
+        })
+        return [DeclSyntax(structureDeclaration)]
         return ["""
         struct PersonBuilder {
             var name: String = ""
