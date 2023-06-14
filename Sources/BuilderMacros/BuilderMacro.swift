@@ -27,7 +27,7 @@ public struct StringifyMacro: ExpressionMacro {
 
 extension String: Error {}
 
-typealias Members = (identifier: TokenSyntax, type: TypeSyntax)
+typealias Member = (identifier: TokenSyntax, type: TypeSyntax)
 
 public struct CustomBuilderMacro: PeerMacro {
     public static func expansion<Context, Declaration>(
@@ -38,20 +38,16 @@ public struct CustomBuilderMacro: PeerMacro {
         guard let structDeclaration = declaration.as(StructDeclSyntax.self) else {
             return []
         }
-        let members = try structDeclaration.memberBlock.members
-            .filter {
-                _ = try getIdentifierFromMember($0)
-                _ = try getTypeFromMember($0)
-                return true
-            }
+        let structIdentifier = TokenSyntax.identifier(structDeclaration.identifier.text + "Builder")
+            .with(\.trailingTrivia, .spaces(1))
 
-//        let members: [Members] = try structDeclaration.memberBlock.members
-//            .map {
-//                (
-//                    try getIdentifierFromMember($0),
-//                    try getTypeFromMember($0)
-//                )
-//            }
+        let members: [Member] = try structDeclaration.memberBlock.members
+            .map {
+                (
+                    try getIdentifierFromMember($0),
+                    try getTypeFromMember($0)
+                )
+            }
 
         func getIdentifierFromMember(_ member: MemberDeclListItemSyntax) throws -> TokenSyntax {
             guard let identifier = member.decl.as(VariableDeclSyntax.self)?.bindings.first?
@@ -67,16 +63,13 @@ public struct CustomBuilderMacro: PeerMacro {
             return type
         }
 
-        let identifier = TokenSyntax.identifier(structDeclaration.identifier.text + "Builder")
-            .with(\.trailingTrivia, .spaces(1))
-
-        func getMemberVariable(member: MemberDeclListItemSyntax) throws -> VariableDeclSyntax {
+        func getMemberVariable(member: Member) -> VariableDeclSyntax {
             VariableDeclSyntax(
                 bindingKeyword: .keyword(.let),
                 bindings: PatternBindingListSyntax([
                     PatternBindingSyntax(
-                        pattern: IdentifierPatternSyntax(identifier: try getIdentifierFromMember(member)),
-                        typeAnnotation: TypeAnnotationSyntax(type: try getTypeFromMember(member))
+                        pattern: IdentifierPatternSyntax(identifier: member.identifier),
+                        typeAnnotation: TypeAnnotationSyntax(type: member.type)
                     )
                 ])
             )
@@ -86,15 +79,14 @@ public struct CustomBuilderMacro: PeerMacro {
         returnStatement.expression = ExprSyntax(FunctionCallExprSyntax(
             calledExpression: IdentifierExprSyntax(identifier: structDeclaration.identifier.trimmed),
             leftParen: .leftParenToken(trailingTrivia: .newline.appending(Trivia.spaces(4))),
-            argumentList: TupleExprElementListSyntax(
-                try members.map { member in
-                    let identifier = try getIdentifierFromMember(member)
-                    return TupleExprElementSyntax(
-                        label: identifier.text,
-                        expression: ExprSyntax(stringLiteral: identifier.text)
+            argumentList: TupleExprElementListSyntax {
+                for member in members {
+                    TupleExprElementSyntax(
+                        label: member.identifier.text,
+                        expression: ExprSyntax(stringLiteral: member.identifier.text)
                     )
                 }
-            ),
+            },
             rightParen: .rightParenToken(leadingTrivia: .newline)
         ))
 
@@ -103,19 +95,19 @@ public struct CustomBuilderMacro: PeerMacro {
             signature: FunctionSignatureSyntax(
                 input: ParameterClauseSyntax(parameterList: FunctionParameterListSyntax([])),
                 output: ReturnClauseSyntax(returnType: TypeSyntax(stringLiteral: structDeclaration.identifier.text))
-            )
-        ) {
-            CodeBlockItemListSyntax([
-                CodeBlockItemListSyntax.Element(
-                    item: CodeBlockItemListSyntax.Element.Item.stmt(StmtSyntax(returnStatement))
-                )
-            ])
-        }
+            ),
+            bodyBuilder: {
+                CodeBlockItemListSyntax([
+                    CodeBlockItemListSyntax.Element(
+                        item: CodeBlockItemListSyntax.Element.Item.stmt(StmtSyntax(returnStatement))
+                    )
+                ])
+            })
 
-        let structureDeclaration = try StructDeclSyntax(identifier: identifier, memberBlockBuilder: {
-            try MemberDeclListSyntax {
+        let structureDeclaration = StructDeclSyntax(identifier: structIdentifier, memberBlockBuilder: {
+            MemberDeclListSyntax {
                 for member in members {
-                    MemberDeclListItemSyntax(decl: try getMemberVariable(member: member))
+                    MemberDeclListItemSyntax(decl: getMemberVariable(member: member))
                 }
                 MemberDeclListItemSyntax(decl: buildFunction)
             }
