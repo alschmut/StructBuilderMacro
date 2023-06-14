@@ -25,6 +25,10 @@ public struct StringifyMacro: ExpressionMacro {
     }
 }
 
+extension String: Error {}
+
+typealias Members = (identifier: TokenSyntax, type: TypeSyntax)
+
 public struct CustomBuilderMacro: PeerMacro {
     public static func expansion<Context, Declaration>(
         of node: SwiftSyntax.AttributeSyntax,
@@ -34,23 +38,60 @@ public struct CustomBuilderMacro: PeerMacro {
         guard let structDeclaration = declaration.as(StructDeclSyntax.self) else {
             return []
         }
-        let members = structDeclaration.memberBlock.members
-            .compactMap { $0.decl.as(VariableDeclSyntax.self)?.bindings.first }
-            .compactMap { $0.pattern.as(IdentifierPatternSyntax.self) }
+        let members = try structDeclaration.memberBlock.members
+            .filter {
+                _ = try getIdentifierFromMember($0)
+                _ = try getTypeFromMember($0)
+                return true
+            }
+
+//        let members: [Members] = try structDeclaration.memberBlock.members
+//            .map {
+//                (
+//                    try getIdentifierFromMember($0),
+//                    try getTypeFromMember($0)
+//                )
+//            }
+
+        func getIdentifierFromMember(_ member: MemberDeclListItemSyntax) throws -> TokenSyntax {
+            guard let identifier = member.decl.as(VariableDeclSyntax.self)?.bindings.first?
+                .pattern.as(IdentifierPatternSyntax.self)?.identifier
+            else { throw "Missing identifier on member" }
+            return identifier
+        }
+
+        func getTypeFromMember(_ member: MemberDeclListItemSyntax) throws -> TypeSyntax {
+            guard let type = member.decl.as(VariableDeclSyntax.self)?.bindings.first?
+                .typeAnnotation?.as(TypeAnnotationSyntax.self)?.type
+            else { throw "Missing type on member" }
+            return type
+        }
 
         let identifier = TokenSyntax.identifier(structDeclaration.identifier.text + "Builder")
             .with(\.trailingTrivia, .spaces(1))
 
+        func getMemberVariable(member: MemberDeclListItemSyntax) throws -> VariableDeclSyntax {
+            VariableDeclSyntax(
+                bindingKeyword: .keyword(.let),
+                bindings: PatternBindingListSyntax([
+                    PatternBindingSyntax(
+                        pattern: IdentifierPatternSyntax(identifier: try getIdentifierFromMember(member)),
+                        typeAnnotation: TypeAnnotationSyntax(type: try getTypeFromMember(member))
+                    )
+                ])
+            )
+        }
 
         var returnStatement = ReturnStmtSyntax()
         returnStatement.expression = ExprSyntax(FunctionCallExprSyntax(
             calledExpression: IdentifierExprSyntax(identifier: structDeclaration.identifier.trimmed),
             leftParen: .leftParenToken(trailingTrivia: .newline.appending(Trivia.spaces(4))),
             argumentList: TupleExprElementListSyntax(
-                members.map { member in
-                    TupleExprElementSyntax(
-                        label: member.identifier.text,
-                        expression: ExprSyntax(stringLiteral: member.identifier.text)
+                try members.map { member in
+                    let identifier = try getIdentifierFromMember(member)
+                    return TupleExprElementSyntax(
+                        label: identifier.text,
+                        expression: ExprSyntax(stringLiteral: identifier.text)
                     )
                 }
             ),
@@ -71,10 +112,13 @@ public struct CustomBuilderMacro: PeerMacro {
             ])
         }
 
-        let structureDeclaration = StructDeclSyntax(identifier: identifier, memberBlockBuilder: {
-            MemberDeclListSyntax([
-                MemberDeclListSyntax.Element(decl: buildFunction)
-            ])
+        let structureDeclaration = try StructDeclSyntax(identifier: identifier, memberBlockBuilder: {
+            try MemberDeclListSyntax {
+                for member in members {
+                    MemberDeclListItemSyntax(decl: try getMemberVariable(member: member))
+                }
+                MemberDeclListItemSyntax(decl: buildFunction)
+            }
         })
         return [DeclSyntax(structureDeclaration)]
 //        return ["""
