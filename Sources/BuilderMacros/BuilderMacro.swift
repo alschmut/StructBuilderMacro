@@ -65,30 +65,32 @@ public struct CustomBuilderMacro: PeerMacro {
 
         func getMemberVariable(member: Member) -> VariableDeclSyntax {
             VariableDeclSyntax(
-                bindingKeyword: .keyword(.let),
+                bindingKeyword: .keyword(.var),
                 bindings: PatternBindingListSyntax([
                     PatternBindingSyntax(
                         pattern: IdentifierPatternSyntax(identifier: member.identifier),
-                        typeAnnotation: TypeAnnotationSyntax(type: member.type)
+                        typeAnnotation: TypeAnnotationSyntax(type: member.type),
+                        initializer: InitializerClauseSyntax(value: ExprSyntax(stringLiteral: "\"\""))
                     )
                 ])
             )
         }
 
-        var returnStatement = ReturnStmtSyntax()
-        returnStatement.expression = ExprSyntax(FunctionCallExprSyntax(
-            calledExpression: IdentifierExprSyntax(identifier: structDeclaration.identifier.trimmed),
-            leftParen: .leftParenToken(trailingTrivia: .newline.appending(Trivia.spaces(4))),
-            argumentList: TupleExprElementListSyntax {
-                for member in members {
-                    TupleExprElementSyntax(
-                        label: member.identifier.text,
-                        expression: ExprSyntax(stringLiteral: member.identifier.text)
-                    )
-                }
-            },
-            rightParen: .rightParenToken(leadingTrivia: .newline)
-        ))
+        let returnStatement = ReturnStmtSyntax(expression:
+            ExprSyntax(FunctionCallExprSyntax(
+                calledExpression: IdentifierExprSyntax(identifier: structDeclaration.identifier.trimmed),
+                leftParen: .leftParenToken(trailingTrivia: .newline.appending(Trivia.spaces(4))),
+                argumentList: TupleExprElementListSyntax {
+                    for member in members {
+                        TupleExprElementSyntax(
+                            label: member.identifier.text,
+                            expression: ExprSyntax(stringLiteral: member.identifier.text)
+                        )
+                    }
+                },
+                rightParen: .rightParenToken(leadingTrivia: .newline)
+            ))
+        )
 
         let buildFunction = FunctionDeclSyntax(
             identifier: .identifier("build"),
@@ -109,7 +111,7 @@ public struct CustomBuilderMacro: PeerMacro {
                 for member in members {
                     MemberDeclListItemSyntax(decl: getMemberVariable(member: member))
                 }
-                MemberDeclListItemSyntax(decl: buildFunction)
+                MemberDeclListItemSyntax(leadingTrivia: .newlines(2), decl: buildFunction)
             }
         })
         return [DeclSyntax(structureDeclaration)]
