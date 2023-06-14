@@ -1,7 +1,13 @@
 import Builder
 
 
-//@CustomBuilder
+@CustomBuilder
 struct House {
-    let numberOfRooms: Int
+    let name: String
+    var familyName: String = ""
+}
+
+@CustomBuilder
+struct Car {
+    let numberOfRooms: String
 }
