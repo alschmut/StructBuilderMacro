@@ -5,9 +5,11 @@ import Builder
 struct House {
     let name: String
     var familyName: String = ""
+    let sofaBrand: String
+    let kitchenBrand: String
 }
 
 @CustomBuilder
 struct Car {
-    let numberOfRooms: String
+    let wheelsType: String
 }
