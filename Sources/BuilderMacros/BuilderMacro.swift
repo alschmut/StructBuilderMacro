@@ -44,8 +44,8 @@ public struct CustomBuilderMacro: PeerMacro {
 
         var returnStatement = ReturnStmtSyntax()
         returnStatement.expression = ExprSyntax(FunctionCallExprSyntax(
-            calledExpression: IdentifierExprSyntax(identifier: structDeclaration.identifier),
-            leftParen: "(\n",
+            calledExpression: IdentifierExprSyntax(identifier: structDeclaration.identifier.trimmed),
+            leftParen: .leftParenToken(trailingTrivia: .newline.appending(Trivia.spaces(4))),
             argumentList: TupleExprElementListSyntax(
                 members.map { member in
                     TupleExprElementSyntax(
@@ -54,7 +54,7 @@ public struct CustomBuilderMacro: PeerMacro {
                     )
                 }
             ),
-            rightParen: "\n)"
+            rightParen: .rightParenToken(leadingTrivia: .newline)
         ))
 
         let buildFunction = FunctionDeclSyntax(
@@ -77,17 +77,17 @@ public struct CustomBuilderMacro: PeerMacro {
             ])
         })
         return [DeclSyntax(structureDeclaration)]
-        return ["""
-        struct PersonBuilder {
-            var name: String = ""
-
-            func build() -> Person {
-                return Person(
-                    name: name
-                )
-            }
-        }
-        """]
+//        return ["""
+//        struct PersonBuilder {
+//            var name: String = ""
+//
+//            func build() -> Person {
+//                return Person(
+//                    name: name
+//                )
+//            }
+//        }
+//        """]
     }
 }
 
