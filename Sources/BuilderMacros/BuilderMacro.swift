@@ -62,17 +62,17 @@ public struct CustomBuilderMacro: PeerMacro {
         func getMemberVariable(member: Member) -> VariableDeclSyntax {
             VariableDeclSyntax(
                 bindingKeyword: .keyword(.var),
-                bindings: PatternBindingListSyntax([
+                bindings: PatternBindingListSyntax {
                     PatternBindingSyntax(
                         pattern: IdentifierPatternSyntax(identifier: member.identifier),
                         typeAnnotation: TypeAnnotationSyntax(type: member.type),
                         initializer: InitializerClauseSyntax(value: ExprSyntax(stringLiteral: "\"\""))
                     )
-                ])
+                }
             )
         }
 
-        let returnStatement = ReturnStmtSyntax(expression:
+        let buildFunctionReturnStatement = ReturnStmtSyntax(expression:
             ExprSyntax(FunctionCallExprSyntax(
                 calledExpression: IdentifierExprSyntax(identifier: structDeclaration.identifier.trimmed),
                 leftParen: .leftParenToken(trailingTrivia: .newline.appending(Trivia.spaces(4))),
@@ -88,28 +88,27 @@ public struct CustomBuilderMacro: PeerMacro {
             ))
         )
 
-        let buildFunction = FunctionDeclSyntax(
-            identifier: .identifier("build"),
-            signature: FunctionSignatureSyntax(
-                input: ParameterClauseSyntax(parameterList: FunctionParameterListSyntax([])),
-                output: ReturnClauseSyntax(returnType: TypeSyntax(stringLiteral: structDeclaration.identifier.text))
-            ),
-            bodyBuilder: {
-                CodeBlockItemListSyntax([
-                    CodeBlockItemListSyntax.Element(
-                        item: CodeBlockItemListSyntax.Element.Item.stmt(StmtSyntax(returnStatement))
-                    )
-                ])
-            })
+        let buildFunctionSignature = FunctionSignatureSyntax(
+            input: ParameterClauseSyntax(parameterList: FunctionParameterListSyntax([])),
+            output: ReturnClauseSyntax(returnType: TypeSyntax(stringLiteral: structDeclaration.identifier.text))
+        )
 
-        let structureDeclaration = StructDeclSyntax(identifier: structIdentifier, memberBlockBuilder: {
+        let buildFunction = FunctionDeclSyntax(identifier: .identifier("build"), signature: buildFunctionSignature) {
+            CodeBlockItemListSyntax {
+                CodeBlockItemSyntax(
+                    item: CodeBlockItemListSyntax.Element.Item.stmt(StmtSyntax(buildFunctionReturnStatement))
+                )
+            }
+        }
+
+        let structureDeclaration = StructDeclSyntax(identifier: structIdentifier) {
             MemberDeclListSyntax {
                 for member in members {
                     MemberDeclListItemSyntax(decl: getMemberVariable(member: member))
                 }
                 MemberDeclListItemSyntax(leadingTrivia: .newlines(2), decl: buildFunction)
             }
-        })
+        }
         return [DeclSyntax(structureDeclaration)]
     }
 }
