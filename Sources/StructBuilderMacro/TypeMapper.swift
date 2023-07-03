@@ -39,7 +39,7 @@ struct TypeMapper {
         "Date": ".now",
         "UUID": "UUID()",
         "Data": "Data()",
-        "URL": "URL(string: \"https:www.google.com\")",
+        "URL": "URL(string: \"https://www.google.com\")!",
         "CGFloat": "0",
         "CGPoint": "CGPoint()",
         "CGRect": "CGRect()",

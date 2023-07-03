@@ -230,7 +230,7 @@ final class BuildableMacroTests: XCTestCase {
                 var m15: Date = .now
                 var m16: UUID = UUID()
                 var m17: Data = Data()
-                var m18: URL = URL(string: "https:www.google.com")
+                var m18: URL = URL(string: "https://www.google.com")!
                 var m19: CGFloat = 0
                 var m20: CGPoint = CGPoint()
                 var m21: CGRect = CGRect()
