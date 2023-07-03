@@ -1,7 +1,7 @@
 import Builder
 
 
-@CustomBuilder
+//@CustomBuilder
 struct House {
     let name: String
     var familyName: String = ""
@@ -9,7 +9,7 @@ struct House {
     let kitchenBrand: String
 }
 
-@CustomBuilder
+//@CustomBuilder
 struct Car {
     let wheelsType: String
 }
