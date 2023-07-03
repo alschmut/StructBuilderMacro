@@ -3,21 +3,16 @@ import SwiftSyntax
 import SwiftSyntaxMacros
 
 @main
-struct StructBuilderPlugin: CompilerPlugin {
+struct BuildablePlugin: CompilerPlugin {
     let providingMacros: [Macro.Type] = [
-        CustomBuilderMacro.self
+        BuildableMacro.self
     ]
 }
 
-
-extension String: Error {}
-
-typealias Member = (identifier: TokenSyntax, type: TypeSyntax)
-
-/// Implementation of the `CustomBuilder` macro, which takes a struct declaration
+/// Implementation of the `Buildable` macro, which takes a struct declaration
 /// and produces a peer struct which implements the builder pattern
 ///
-///     @CustomBuilder
+///     @Buildable
 ///     struct Person {
 ///         let name: String
 ///         let age: Int
@@ -44,7 +39,7 @@ typealias Member = (identifier: TokenSyntax, type: TypeSyntax)
 ///             )
 ///         }
 ///     }
-public struct CustomBuilderMacro: PeerMacro {
+public struct BuildableMacro: PeerMacro {
     public static func expansion<Context, Declaration>(
         of node: SwiftSyntax.AttributeSyntax,
         providingPeersOf declaration: Declaration,

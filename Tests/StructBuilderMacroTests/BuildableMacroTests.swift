@@ -4,14 +4,14 @@ import XCTest
 import StructBuilderMacro
 
 let testMacros: [String: Macro.Type] = [
-    "CustomBuilder": CustomBuilderMacro.self
+    "Buildable": BuildableMacro.self
 ]
 
-final class StructBuilderMacroTests: XCTestCase {
+final class BuildableMacroTests: XCTestCase {
     func test_macro_with_one_string_member() {
         assertMacroExpansion(
             """
-            @CustomBuilder
+            @Buildable
             struct Person {
                 let name: String
             }
@@ -38,7 +38,7 @@ final class StructBuilderMacroTests: XCTestCase {
     func test_macro_with_two_string_member() {
         assertMacroExpansion(
             """
-            @CustomBuilder
+            @Buildable
             struct Person {
                 let name: String
                 let middleName: String
@@ -69,7 +69,7 @@ final class StructBuilderMacroTests: XCTestCase {
     func test_macro_with_custom_types() {
         assertMacroExpansion(
             """
-            @CustomBuilder
+            @Buildable
             struct MyObject {
                 let m1: MyOtherObject
             }
@@ -96,7 +96,7 @@ final class StructBuilderMacroTests: XCTestCase {
     func test_macro_with_collection_types() {
         assertMacroExpansion(
             """
-            @CustomBuilder
+            @Buildable
             struct MyObject {
                 let m1: [String]
                 let m2: [MyOtherObject]
@@ -127,7 +127,7 @@ final class StructBuilderMacroTests: XCTestCase {
     func test_macro_with_optional_types() {
         assertMacroExpansion(
             """
-            @CustomBuilder
+            @Buildable
             struct MyObject {
                 let m1: String?
                 let m2: [Int]?
@@ -158,7 +158,7 @@ final class StructBuilderMacroTests: XCTestCase {
     func test_macro_with_different_types() {
         assertMacroExpansion(
             """
-            @CustomBuilder
+            @Buildable
             struct MyObject {
                 let m01: String
                 let m02: Int
