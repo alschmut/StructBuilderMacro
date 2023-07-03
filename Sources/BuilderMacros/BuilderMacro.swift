@@ -1,6 +1,5 @@
 import SwiftCompilerPlugin
 import SwiftSyntax
-import SwiftSyntaxBuilder
 import SwiftSyntaxMacros
 
 @main
@@ -10,21 +9,41 @@ struct BuilderPlugin: CompilerPlugin {
     ]
 }
 
-/// Implementation of the `stringify` macro, which takes an expression
-/// of any type and produces a tuple containing the value of that expression
-/// and the source code that produced the value. For example
-///
-///     #stringify(x + y)
-///
-///  will expand to
-///
-///     (x + y, "x + y")
-
 
 extension String: Error {}
 
 typealias Member = (identifier: TokenSyntax, type: TypeSyntax)
 
+/// Implementation of the `CustomBuilder` macro, which takes a struct declaration
+/// and produces a peer struct which implements the builder pattern
+///
+///     @CustomBuilder
+///     struct Person {
+///         let name: String
+///         let age: Int
+///         let address: Address
+///     }
+///
+///  will expand to
+///
+///     struct Person {
+///         let name: String
+///         let age: Int
+///         let address: Address
+///     }
+///     struct PersonBuilder {
+///         var name: String = ""
+///         var age: Int = 0
+///         var address: Address = AddressBuilder().build()
+///
+///         func build() -> Person {
+///             return Person(
+///                 name: name,
+///                 age: age,
+///                 address: address
+///             )
+///         }
+///     }
 public struct CustomBuilderMacro: PeerMacro {
     public static func expansion<Context, Declaration>(
         of node: SwiftSyntax.AttributeSyntax,
@@ -34,88 +53,21 @@ public struct CustomBuilderMacro: PeerMacro {
         guard let structDeclaration = declaration.as(StructDeclSyntax.self) else {
             throw "Macro can only be applied to structs"
         }
+
+        let members = try MemberMapper.mapFrom(members: structDeclaration.memberBlock.members)
+
         let structIdentifier = TokenSyntax.identifier(structDeclaration.identifier.text + "Builder")
             .with(\.trailingTrivia, .spaces(1))
-
-        let members: [Member] = try structDeclaration.memberBlock.members
-            .map {
-                (
-                    try getIdentifierFromMember($0),
-                    try getTypeFromMember($0)
-                )
-            }
-
-        func getIdentifierFromMember(_ member: MemberDeclListItemSyntax) throws -> TokenSyntax {
-            guard let identifier = member.decl.as(VariableDeclSyntax.self)?.bindings.first?
-                .pattern.as(IdentifierPatternSyntax.self)?.identifier
-            else { throw "Missing identifier on member" }
-            return identifier
-        }
-
-        func getTypeFromMember(_ member: MemberDeclListItemSyntax) throws -> TypeSyntax {
-            guard let type = member.decl.as(VariableDeclSyntax.self)?.bindings.first?
-                .typeAnnotation?.as(TypeAnnotationSyntax.self)?.type
-            else { throw "Missing type on member" }
-            return type
-        }
-
-        func getMemberVariable(member: Member) -> VariableDeclSyntax {
-            VariableDeclSyntax(
-                bindingKeyword: .keyword(.var),
-                bindings: PatternBindingListSyntax {
-                    PatternBindingSyntax(
-                        pattern: IdentifierPatternSyntax(identifier: member.identifier),
-                        typeAnnotation: TypeAnnotationSyntax(type: member.type),
-                        initializer: getDefaultInitializerClause(type: member.type)
-                    )
-                }
-            )
-        }
-
-        func getDefaultInitializerClause(type: TypeSyntax) -> InitializerClauseSyntax? {
-            guard let defaultExpr = TypeMapper.getDefaultValueFor(type: type) else {
-                return nil
-            }
-            return InitializerClauseSyntax(value: defaultExpr)
-        }
-
-        let buildFunctionReturnStatement = ReturnStmtSyntax(expression:
-            ExprSyntax(FunctionCallExprSyntax(
-                calledExpression: IdentifierExprSyntax(identifier: structDeclaration.identifier.trimmed),
-                leftParen: .leftParenToken(trailingTrivia: Trivia.spaces(4)),
-                argumentList: TupleExprElementListSyntax {
-                    for member in members {
-                        TupleExprElementSyntax(
-                            leadingTrivia: .newline,
-                            label: member.identifier,
-                            colon: TokenSyntax(TokenKind.colon, presence: .present),
-                            expression: ExprSyntax(stringLiteral: member.identifier.text)
-                        )
-                    }
-                },
-                rightParen: .rightParenToken(leadingTrivia: .newline)
-            ))
-        )
-
-        let buildFunctionSignature = FunctionSignatureSyntax(
-            input: ParameterClauseSyntax(parameterList: FunctionParameterListSyntax([])),
-            output: ReturnClauseSyntax(returnType: TypeSyntax(stringLiteral: structDeclaration.identifier.text))
-        )
-
-        let buildFunction = FunctionDeclSyntax(identifier: .identifier("build"), signature: buildFunctionSignature) {
-            CodeBlockItemListSyntax {
-                CodeBlockItemSyntax(
-                    item: CodeBlockItemListSyntax.Element.Item.stmt(StmtSyntax(buildFunctionReturnStatement))
-                )
-            }
-        }
 
         let structureDeclaration = StructDeclSyntax(identifier: structIdentifier) {
             MemberDeclListSyntax {
                 for member in members {
-                    MemberDeclListItemSyntax(decl: getMemberVariable(member: member))
+                    MemberDeclListItemSyntax(decl: VariableDeclFactory.makeVariableDeclFrom(member: member))
                 }
-                MemberDeclListItemSyntax(leadingTrivia: .newlines(2), decl: buildFunction)
+                MemberDeclListItemSyntax(
+                    leadingTrivia: .newlines(2),
+                    decl: FunctionDeclFactory.makeFunctionDeclFrom(structDeclaration: structDeclaration, members: members)
+                )
             }
         }
         return [DeclSyntax(structureDeclaration)]

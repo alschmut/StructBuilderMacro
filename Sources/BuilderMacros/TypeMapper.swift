@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftSyntax
 
 struct TypeMapper {
     static func getDefaultValueFor(type: TypeSyntax) -> ExprSyntax? {

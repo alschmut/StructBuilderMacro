@@ -1,13 +1,34 @@
 // The Swift Programming Language
 // https://docs.swift.org/swift-book
 
-/// A macro that produces both a value and a string containing the
-/// source code that generated the value. For example,
+/// A macro that produces a peer struct which implements the builder pattern
 ///
-///     #stringify(x + y)
+///     @CustomBuilder
+///     struct Person {
+///         let name: String
+///         let age: Int
+///         let address: Address
+///     }
 ///
-/// produces a tuple `(x + y, "x + y")`.
-
-
+///  will expand to
+///
+///     struct Person {
+///         let name: String
+///         let age: Int
+///         let address: Address
+///     }
+///     struct PersonBuilder {
+///         var name: String = ""
+///         var age: Int = 0
+///         var address: Address = AddressBuilder().build()
+///
+///         func build() -> Person {
+///             return Person(
+///                 name: name,
+///                 age: age,
+///                 address: address
+///             )
+///         }
+///     }
 @attached(peer, names: arbitrary)
 public macro CustomBuilder() = #externalMacro(module: "BuilderMacros", type: "CustomBuilderMacro")
