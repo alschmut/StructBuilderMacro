@@ -32,7 +32,7 @@ public struct CustomBuilderMacro: PeerMacro {
         in context: Context
     ) throws -> [SwiftSyntax.DeclSyntax] where Context : SwiftSyntaxMacros.MacroExpansionContext, Declaration : SwiftSyntax.DeclSyntaxProtocol {
         guard let structDeclaration = declaration.as(StructDeclSyntax.self) else {
-            return []
+            throw "Macro can only be applied to structs"
         }
         let structIdentifier = TokenSyntax.identifier(structDeclaration.identifier.text + "Builder")
             .with(\.trailingTrivia, .spaces(1))
@@ -66,10 +66,17 @@ public struct CustomBuilderMacro: PeerMacro {
                     PatternBindingSyntax(
                         pattern: IdentifierPatternSyntax(identifier: member.identifier),
                         typeAnnotation: TypeAnnotationSyntax(type: member.type),
-                        initializer: InitializerClauseSyntax(value: TypeMapper.getDefaultValueFor(type: member.type))
+                        initializer: getDefaultInitializerClause(type: member.type)
                     )
                 }
             )
+        }
+
+        func getDefaultInitializerClause(type: TypeSyntax) -> InitializerClauseSyntax? {
+            guard let defaultExpr = TypeMapper.getDefaultValueFor(type: type) else {
+                return nil
+            }
+            return InitializerClauseSyntax(value: defaultExpr)
         }
 
         let buildFunctionReturnStatement = ReturnStmtSyntax(expression:
@@ -114,43 +121,3 @@ public struct CustomBuilderMacro: PeerMacro {
         return [DeclSyntax(structureDeclaration)]
     }
 }
-
-struct TypeMapper {
-    static func getDefaultValueFor(type: TypeSyntax) -> ExprSyntax {
-        if type.kind == .arrayType {
-            return ExprSyntax(stringLiteral: "[]")
-        } else if let defaultValue = mapping[type.trimmedDescription] {
-            return defaultValue
-        } else {
-            return ExprSyntax(stringLiteral: type.trimmedDescription + "Builder().build()")
-        }
-    }
-
-    private static var mapping: [String: ExprSyntax] = [
-        "String": "\"\"",
-        "Int": "0",
-        "Int8": "0",
-        "Int16": "0",
-        "Int32": "0",
-        "Int46": "0",
-        "UInt": "0",
-        "UInt8": "0",
-        "UInt16": "0",
-        "UInt32": "0",
-        "UInt46": "0",
-        "Bool": "false",
-        "Double": "0",
-        "Float": "0",
-        "Date": ".now",
-        "UUID": "UUID()",
-        "Data": "Data()",
-        "URL": "URL(string: \"https:www.google.com\")",
-        "CGFloat": "0",
-        "CGPoint": "CGPoint()",
-        "CGRect": "CGRect()",
-        "CGSize": "CGSize()",
-        "CGVector": "CGVector()",
-    ]
-}
-
-import Foundation
