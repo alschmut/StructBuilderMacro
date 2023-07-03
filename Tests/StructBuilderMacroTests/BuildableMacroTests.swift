@@ -165,12 +165,12 @@ final class BuildableMacroTests: XCTestCase {
                 let m03: Int8
                 let m04: Int16
                 let m05: Int32
-                let m06: Int46
+                let m06: Int64
                 let m07: UInt
                 let m08: UInt8
                 let m09: UInt16
                 let m10: UInt32
-                let m11: UInt46
+                let m11: UInt64
                 let m12: Bool
                 let m13: Double
                 let m14: Float
@@ -193,12 +193,12 @@ final class BuildableMacroTests: XCTestCase {
                 let m03: Int8
                 let m04: Int16
                 let m05: Int32
-                let m06: Int46
+                let m06: Int64
                 let m07: UInt
                 let m08: UInt8
                 let m09: UInt16
                 let m10: UInt32
-                let m11: UInt46
+                let m11: UInt64
                 let m12: Bool
                 let m13: Double
                 let m14: Float
@@ -218,16 +218,16 @@ final class BuildableMacroTests: XCTestCase {
                 var m03: Int8 = 0
                 var m04: Int16 = 0
                 var m05: Int32 = 0
-                var m06: Int46 = 0
+                var m06: Int64 = 0
                 var m07: UInt = 0
                 var m08: UInt8 = 0
                 var m09: UInt16 = 0
                 var m10: UInt32 = 0
-                var m11: UInt46 = 0
+                var m11: UInt64 = 0
                 var m12: Bool = false
                 var m13: Double = 0
                 var m14: Float = 0
-                var m15: Date = .now
+                var m15: Date = Date()
                 var m16: UUID = UUID()
                 var m17: Data = Data()
                 var m18: URL = URL(string: "https://www.google.com")!
