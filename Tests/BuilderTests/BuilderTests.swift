@@ -93,6 +93,37 @@ final class BuilderTests: XCTestCase {
         )
     }
 
+    func test_macro_with_collection_types() {
+        assertMacroExpansion(
+            """
+            @CustomBuilder
+            struct MyObject {
+                let m1: [String]
+                let m2: [MyOtherObject]
+            }
+            """,
+            expandedSource: """
+
+            struct MyObject {
+                let m1: [String]
+                let m2: [MyOtherObject]
+            }
+            struct MyObjectBuilder {
+                var m1: [String] = []
+                var m2: [MyOtherObject] = []
+
+                func build() -> MyObject {
+                    return MyObject(
+                        m1: m1,
+                        m2: m2
+                    )
+                }
+            }
+            """,
+            macros: testMacros
+        )
+    }
+
     func test_macro_with_different_types() {
         assertMacroExpansion(
             """

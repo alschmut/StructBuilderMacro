@@ -117,7 +117,9 @@ public struct CustomBuilderMacro: PeerMacro {
 
 struct TypeMapper {
     static func getDefaultValueFor(type: TypeSyntax) -> ExprSyntax {
-        if let defaultValue = mapping[type.trimmedDescription] {
+        if type.kind == .arrayType {
+            return ExprSyntax(stringLiteral: "[]")
+        } else if let defaultValue = mapping[type.trimmedDescription] {
             return defaultValue
         } else {
             return ExprSyntax(stringLiteral: type.trimmedDescription + "Builder().build()")
