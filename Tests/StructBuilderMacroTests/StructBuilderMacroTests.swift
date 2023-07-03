@@ -1,13 +1,13 @@
 import SwiftSyntaxMacros
 import SwiftSyntaxMacrosTestSupport
 import XCTest
-import BuilderMacros
+import StructBuilderMacro
 
 let testMacros: [String: Macro.Type] = [
     "CustomBuilder": CustomBuilderMacro.self
 ]
 
-final class BuilderTests: XCTestCase {
+final class StructBuilderMacroTests: XCTestCase {
     func test_macro_with_one_string_member() {
         assertMacroExpansion(
             """

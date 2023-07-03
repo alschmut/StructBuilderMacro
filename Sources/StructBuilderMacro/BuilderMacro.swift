@@ -3,7 +3,7 @@ import SwiftSyntax
 import SwiftSyntaxMacros
 
 @main
-struct BuilderPlugin: CompilerPlugin {
+struct StructBuilderPlugin: CompilerPlugin {
     let providingMacros: [Macro.Type] = [
         CustomBuilderMacro.self
     ]

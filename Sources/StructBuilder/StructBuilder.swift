@@ -31,4 +31,4 @@
 ///         }
 ///     }
 @attached(peer, names: arbitrary)
-public macro CustomBuilder() = #externalMacro(module: "BuilderMacros", type: "CustomBuilderMacro")
+public macro CustomBuilder() = #externalMacro(module: "StructBuilderMacro", type: "CustomBuilderMacro")
