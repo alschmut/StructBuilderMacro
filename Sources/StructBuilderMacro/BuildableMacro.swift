@@ -49,7 +49,7 @@ public struct BuildableMacro: PeerMacro {
             throw "Macro can only be applied to structs"
         }
 
-        let members = try MemberMapper.mapFrom(members: structDeclaration.memberBlock.members)
+        let members = MemberMapper.mapFrom(members: structDeclaration.memberBlock.members)
 
         let structIdentifier = TokenSyntax.identifier(structDeclaration.identifier.text + "Builder")
             .with(\.trailingTrivia, .spaces(1))

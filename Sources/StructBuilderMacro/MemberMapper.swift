@@ -10,7 +10,7 @@ import SwiftSyntax
 typealias Member = (identifier: TokenSyntax, type: TypeSyntax)
 
 struct MemberMapper {
-    static func mapFrom(members: MemberDeclListSyntax) throws -> [Member] {
+    static func mapFrom(members: MemberDeclListSyntax) -> [Member] {
         members
             .compactMap { $0.decl.as(VariableDeclSyntax.self) }
             .filter(\.isStoredProperty)
