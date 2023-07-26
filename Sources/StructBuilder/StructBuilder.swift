@@ -30,5 +30,8 @@
 ///             )
 ///         }
 ///     }
-@attached(peer, names: arbitrary)
-public macro Buildable() = #externalMacro(module: "StructBuilderMacro", type: "BuildableMacro")
+@attached(peer, names: suffixed(Builder))
+public macro Buildable() = #externalMacro(
+    module: "StructBuilderMacro",
+    type: "BuildableMacro"
+)
