@@ -15,6 +15,7 @@ struct MemberMapper {
             .compactMap { $0.decl.as(VariableDeclSyntax.self) }
             .filter(\.isStoredProperty)
             .filter { !hasStaticModifier($0) }
+            .filter { !hasPrivateModifier($0) }
             .compactMap {
                 guard let patternBinding = $0.bindings.first else { return nil }
                 guard let identifier = getIdentifierFromMember(patternBinding) else { return nil }
@@ -34,6 +35,11 @@ struct MemberMapper {
     private static func hasStaticModifier(_ variable: VariableDeclSyntax) -> Bool {
         guard let modifiers = variable.modifiers else { return false }
         return modifiers.contains(where: { $0.name.text.contains("static") })
+    }
+
+    private static func hasPrivateModifier(_ variable: VariableDeclSyntax) -> Bool {
+        guard let modifiers = variable.modifiers else { return false }
+        return modifiers.contains(where: { $0.name.text.contains("private") })
     }
 }
 
