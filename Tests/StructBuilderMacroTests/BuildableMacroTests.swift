@@ -66,7 +66,7 @@ final class BuildableMacroTests: XCTestCase {
         )
     }
 
-    func test_should_create_macro_with_custom_types_builder() {
+    func test_should_set_default_to_custom_type_builder() {
         assertMacroExpansion(
             """
             @Buildable
@@ -93,7 +93,7 @@ final class BuildableMacroTests: XCTestCase {
         )
     }
 
-    func test_should_create_macro_with_collection_types_having_empty_collection_default_values() {
+    func test_should_set_default_to_empty_collection() {
         assertMacroExpansion(
             """
             @Buildable
@@ -159,7 +159,7 @@ final class BuildableMacroTests: XCTestCase {
         )
     }
 
-    func test_macro_with_unwanted_computed_variable() {
+    func test_should_ignore_computed_variable() {
         assertMacroExpansion(
             """
             @Buildable
@@ -188,7 +188,7 @@ final class BuildableMacroTests: XCTestCase {
         )
     }
 
-    func test_macro_with_unwanted_static_variable() {
+    func test_should_ignore_static_variable() {
         assertMacroExpansion(
             """
             @Buildable
@@ -215,7 +215,7 @@ final class BuildableMacroTests: XCTestCase {
         )
     }
 
-    func test_macro_with_implicitly_unwrapped_optional() {
+    func test_should_set_default_to_nil_for_implicitly_unwrapped_optional() {
         assertMacroExpansion(
             """
             @Buildable
@@ -242,7 +242,7 @@ final class BuildableMacroTests: XCTestCase {
         )
     }
 
-    func test_macro_with_private_variables() {
+    func test_should_ignore_private_variables() {
         assertMacroExpansion(
             """
             @Buildable
@@ -275,7 +275,7 @@ final class BuildableMacroTests: XCTestCase {
         )
     }
 
-    func test_macro_with_different_types() {
+    func test_should_set_correct_default_values_for_defined_types() {
         assertMacroExpansion(
             """
             @Buildable
