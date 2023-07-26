@@ -87,3 +87,18 @@ assuming that the `UnknownTypeBuilder` was created somewhere else.
 - The list of default values is limited to the values specified in the above table. List can be extended, if necessary.
 - For an enum Type `MyEnum` the default value is currently set to `MyEnumBuilder().build()`, instead to the first enum case
 - The macro only works on `struct`'s
+
+
+### Roadmap
+
+Why did I create the macro? 
+- I created the macro out of personal curiosity and the hope to be able to reduce repetitive code in my own projects
+- I am not using the macro in any real project yet and will probably wait until Xcode 15 is released, in case there will be any big unforeseen changes
+
+Will I continue developing the macro?
+- If the macro still looks promising by the time Xcode 15 is released, I will create a release tag
+- Depending on my own use cases, which I am/was trying to solve, I might continue developing the macro, **though, I do guarantee to keep the project up to date**
+
+Why did I publish the macro publicly?
+- In case other developers find the macro useful and want to use it as is
+- In case other developers want to improve the macro by making changes to my project or forking it
