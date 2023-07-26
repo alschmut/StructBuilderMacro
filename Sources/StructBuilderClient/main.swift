@@ -27,6 +27,8 @@ struct MyObject {
     let m22: CGSize
     let m23: CGVector
     let m24: String?
-    let m25: [String]
-    var m26: String
+    let m25: String!
+    let m26: [String]
+    let m27: [String: String]
+    var m28: String
 }
