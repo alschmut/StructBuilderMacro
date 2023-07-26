@@ -45,6 +45,11 @@ struct PersonBuilder {
 }
 ```
 
+### Limitations
+- The list of default values is limited to the values specified in the below table. The list can be extended, if necessary.
+- For an enum Type `MyEnum` the default value is currently set to `MyEnumBuilder().build()`, instead to the first enum case
+- The macro only works on `struct` definitions
+
 
 ### Specified default values
 The list of default values is limited to the values specified in the below table. 
@@ -81,12 +86,6 @@ assuming that the `UnknownTypeBuilder` was created somewhere else.
 | CGRect | CGRect() |
 | CGSize | CGSize() |
 | CGVector | CGVector() |
-
-
-### Limitations
-- The list of default values is limited to the values specified in the above table. List can be extended, if necessary.
-- For an enum Type `MyEnum` the default value is currently set to `MyEnumBuilder().build()`, instead to the first enum case
-- The macro only works on `struct`'s
 
 
 ### Roadmap
