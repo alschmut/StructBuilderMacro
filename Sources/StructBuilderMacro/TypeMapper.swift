@@ -12,6 +12,8 @@ struct TypeMapper {
     static func getDefaultValueFor(type: TypeSyntax) -> ExprSyntax? {
         if type.kind == .optionalType {
             return nil
+        } else if type.kind == .implicitlyUnwrappedOptionalType {
+            return nil
         } else if type.kind == .arrayType {
             return ExprSyntax(stringLiteral: "[]")
         } else if let defaultValue = mapping[type.trimmedDescription] {

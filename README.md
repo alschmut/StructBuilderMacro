@@ -74,5 +74,3 @@ assuming that the `UnknownTypeBuilder` was created somewhere else.
 - The list of default values is limited to the values specified in the above table. List can be extended, if necessary.
 - For an enum Type `MyEnum` the default value is currently set to `MyEnumBuilder().build()`, instead to the first enum case
 - The macro only works on `struct`'s
-- Using implicitly unwrapped optionals on a property is currently not supported
-- The buildable struct can not contain any static variables, because they are currently handled like non static variables

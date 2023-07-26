@@ -211,6 +211,33 @@ final class BuildableMacroTests: XCTestCase {
         )
     }
 
+    func test_macro_with_implicitly_unwrapped_optional() {
+        assertMacroExpansion(
+            """
+            @Buildable
+            struct MyObject {
+                let m1: String!
+            }
+            """,
+            expandedSource: """
+
+            struct MyObject {
+                let m1: String!
+            }
+            struct MyObjectBuilder {
+                var m1: String!
+
+                func build() -> MyObject {
+                    return MyObject(
+                        m1: m1
+                    )
+                }
+            }
+            """,
+            macros: testMacros
+        )
+    }
+
     func test_macro_with_different_types() {
         assertMacroExpansion(
             """
