@@ -8,7 +8,7 @@ let testMacros: [String: Macro.Type] = [
 ]
 
 final class BuildableMacroTests: XCTestCase {
-    func test_macro_with_one_string_member() {
+    func test_should_create_macro_with_one_string_member() {
         assertMacroExpansion(
             """
             @Buildable
@@ -35,7 +35,7 @@ final class BuildableMacroTests: XCTestCase {
         )
     }
 
-    func test_macro_with_two_string_member() {
+    func test_should_create_macro_with_two_string_members() {
         assertMacroExpansion(
             """
             @Buildable
@@ -66,7 +66,7 @@ final class BuildableMacroTests: XCTestCase {
         )
     }
 
-    func test_macro_with_custom_types() {
+    func test_should_create_macro_with_custom_types_builder() {
         assertMacroExpansion(
             """
             @Buildable
@@ -93,13 +93,14 @@ final class BuildableMacroTests: XCTestCase {
         )
     }
 
-    func test_macro_with_collection_types() {
+    func test_should_create_macro_with_collection_types_having_empty_collection_default_values() {
         assertMacroExpansion(
             """
             @Buildable
             struct MyObject {
                 let m1: [String]
                 let m2: [MyOtherObject]
+                let m3: [String: String]
             }
             """,
             expandedSource: """
@@ -107,15 +108,18 @@ final class BuildableMacroTests: XCTestCase {
             struct MyObject {
                 let m1: [String]
                 let m2: [MyOtherObject]
+                let m3: [String: String]
             }
             struct MyObjectBuilder {
                 var m1: [String] = []
                 var m2: [MyOtherObject] = []
+                var m3: [String: String] = [:]
 
                 func build() -> MyObject {
                     return MyObject(
                         m1: m1,
-                        m2: m2
+                        m2: m2,
+                        m3: m3
                     )
                 }
             }

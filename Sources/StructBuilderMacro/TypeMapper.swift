@@ -14,6 +14,8 @@ struct TypeMapper {
             return nil
         } else if type.kind == .implicitlyUnwrappedOptionalType {
             return nil
+        } else if type.kind == .dictionaryType {
+            return ExprSyntax(stringLiteral: "[:]")
         } else if type.kind == .arrayType {
             return ExprSyntax(stringLiteral: "[]")
         } else if let defaultValue = mapping[type.trimmedDescription] {
