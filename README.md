@@ -2,6 +2,11 @@
 An attached macro that produces a peer struct which implements the builder pattern
 This allows the creation of the struct with minimal effort using default values.
 
+> **Important!** This macro is intended to be used for simple structs without explicit initialiser.
+The macro is by no means a perfect solution that works for all struct implementations.
+The macro makes a best guess to decide how the implicit memberwise initialiser could look like and might fail if some edge cases have not been considered.
+The macro was created out of personal interest and for a few smaller private projects.
+
 ### Example
 ```swift
 @Buildable
@@ -57,7 +62,9 @@ assuming that the `UnknownTypeBuilder` was created somewhere else.
 | Date | Date() |
 | UUID | UUID() |
 | [AnyType] | [] |
+| [AnyType:AnyType] | [:] |
 | AnyType? | *(implicitly nil)* |
+| AnyType! | *(implicitly nil)* |
 | Int8 | 0 |
 | Int16 | 0 |
 | Int32 | 0 |
