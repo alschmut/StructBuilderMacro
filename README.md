@@ -10,6 +10,12 @@ struct Person {
     let age: Int
     let address: Address
     let hobby: String?
+    
+    var likesReading: Bool {
+        hobby == "Reading" 
+    }
+    
+    static let minimumAge = 21
 }
 
 let anyPerson = PersonBuilder().build()
