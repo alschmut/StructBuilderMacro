@@ -155,6 +155,35 @@ final class BuildableMacroTests: XCTestCase {
         )
     }
 
+    func test_macro_with_unwanted_computed_variable() {
+        assertMacroExpansion(
+            """
+            @Buildable
+            struct MyObject {
+                var unwantedComputedVariable: String {
+                    "myText"
+                }
+            }
+            """,
+            expandedSource: """
+
+            struct MyObject {
+                var unwantedComputedVariable: String {
+                    "myText"
+                }
+            }
+            struct MyObjectBuilder {
+
+                func build() -> MyObject {
+                    return MyObject(
+                    )
+                }
+            }
+            """,
+            macros: testMacros
+        )
+    }
+
     func test_macro_with_different_types() {
         assertMacroExpansion(
             """
