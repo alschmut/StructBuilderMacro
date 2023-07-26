@@ -184,6 +184,33 @@ final class BuildableMacroTests: XCTestCase {
         )
     }
 
+    func test_macro_with_unwanted_static_variable() {
+        assertMacroExpansion(
+            """
+            @Buildable
+            struct MyObject {
+                static let unwantedStaticVariable1: String = ""
+                static var unwantedStaticVariable2: String = ""
+            }
+            """,
+            expandedSource: """
+
+            struct MyObject {
+                static let unwantedStaticVariable1: String = ""
+                static var unwantedStaticVariable2: String = ""
+            }
+            struct MyObjectBuilder {
+
+                func build() -> MyObject {
+                    return MyObject(
+                    )
+                }
+            }
+            """,
+            macros: testMacros
+        )
+    }
+
     func test_macro_with_different_types() {
         assertMacroExpansion(
             """
