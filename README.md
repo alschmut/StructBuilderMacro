@@ -1,5 +1,5 @@
 # StructBuilderMacro
-An attached macro that produces a peer struct which implements the builder pattern
+An attached macro that produces a peer struct which implements the builder pattern.
 This allows the creation of the struct with minimal effort using default values.
 
 > **Important!** This macro is intended to be used for simple structs without explicit initialiser.
