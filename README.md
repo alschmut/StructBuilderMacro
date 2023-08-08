@@ -1,5 +1,5 @@
-# StructBuilderMacro
-An attached macro that produces a peer struct which implements the builder pattern.
+# Swift Struct Builder Macro
+An attached swift macro that produces a peer struct which implements the builder pattern.
 This allows the creation of the struct with minimal effort using default values.
 
 > **Important!** This macro is intended to be used for simple structs without explicit initialiser.
@@ -95,7 +95,6 @@ Why did I create the macro?
 - I am not using the macro in any real project yet and will probably wait until Xcode 15 is released, in case there will be any big unforeseen changes
 
 Will I continue developing the macro?
-- If the macro still looks promising by the time Xcode 15 is released, I will create a release tag
 - Depending on my own use cases, which I am/was trying to solve, I might continue developing the macro, **though, I do guarantee to keep the project up to date**
 
 Why did I publish the macro publicly?
