@@ -11,11 +11,11 @@ struct FunctionDeclFactory {
     static func makeFunctionDeclFrom(structDeclaration: StructDeclSyntax, members: [Member]) -> FunctionDeclSyntax {
         let buildFunctionReturnStatement = ReturnStmtSyntax(expression:
             ExprSyntax(FunctionCallExprSyntax(
-                calledExpression: IdentifierExprSyntax(identifier: structDeclaration.identifier.trimmed),
+                calledExpression: DeclReferenceExprSyntax(baseName: structDeclaration.name.trimmed),
                 leftParen: .leftParenToken(trailingTrivia: Trivia.spaces(4)),
-                argumentList: TupleExprElementListSyntax {
+                arguments: LabeledExprListSyntax {
                     for member in members {
-                        TupleExprElementSyntax(
+                        LabeledExprSyntax(
                             leadingTrivia: .newline,
                             label: member.identifier,
                             colon: TokenSyntax(TokenKind.colon, presence: .present),
@@ -28,11 +28,11 @@ struct FunctionDeclFactory {
         )
         
         let buildFunctionSignature = FunctionSignatureSyntax(
-            input: ParameterClauseSyntax(parameterList: FunctionParameterListSyntax([])),
-            output: ReturnClauseSyntax(returnType: TypeSyntax(stringLiteral: structDeclaration.identifier.text))
+            parameterClause: FunctionParameterClauseSyntax(parameters: FunctionParameterListSyntax([])),
+            returnClause: ReturnClauseSyntax(type: TypeSyntax(stringLiteral: structDeclaration.name.text))
         )
         
-        return FunctionDeclSyntax(identifier: .identifier("build"), signature: buildFunctionSignature) {
+        return FunctionDeclSyntax(name: .identifier("build"), signature: buildFunctionSignature) {
             CodeBlockItemListSyntax {
                 CodeBlockItemSyntax(
                     item: CodeBlockItemListSyntax.Element.Item.stmt(StmtSyntax(buildFunctionReturnStatement))

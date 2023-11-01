@@ -51,15 +51,15 @@ public struct BuildableMacro: PeerMacro {
 
         let members = MemberMapper.mapFrom(members: structDeclaration.memberBlock.members)
 
-        let structIdentifier = TokenSyntax.identifier(structDeclaration.identifier.text + "Builder")
+        let structIdentifier = TokenSyntax.identifier(structDeclaration.name.text + "Builder")
             .with(\.trailingTrivia, .spaces(1))
 
-        let structureDeclaration = StructDeclSyntax(identifier: structIdentifier) {
-            MemberDeclListSyntax {
+        let structureDeclaration = StructDeclSyntax(name: structIdentifier) {
+            MemberBlockItemListSyntax {
                 for member in members {
-                    MemberDeclListItemSyntax(decl: VariableDeclFactory.makeVariableDeclFrom(member: member))
+                    MemberBlockItemSyntax(decl: VariableDeclFactory.makeVariableDeclFrom(member: member))
                 }
-                MemberDeclListItemSyntax(
+                MemberBlockItemSyntax(
                     leadingTrivia: .newlines(2),
                     decl: FunctionDeclFactory.makeFunctionDeclFrom(structDeclaration: structDeclaration, members: members)
                 )

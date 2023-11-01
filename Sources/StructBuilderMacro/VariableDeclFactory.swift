@@ -10,7 +10,7 @@ import SwiftSyntax
 struct VariableDeclFactory {
     static func makeVariableDeclFrom(member: Member) -> VariableDeclSyntax {
         VariableDeclSyntax(
-            bindingKeyword: .keyword(.var),
+            bindingSpecifier: .keyword(.var),
             bindings: PatternBindingListSyntax {
                 PatternBindingSyntax(
                     pattern: IdentifierPatternSyntax(identifier: member.identifier),
