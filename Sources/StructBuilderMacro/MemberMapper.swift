@@ -10,7 +10,7 @@ import SwiftSyntax
 typealias Member = (identifier: TokenSyntax, type: TypeSyntax)
 
 struct MemberMapper {
-    static func mapFrom(members: MemberDeclListSyntax) -> [Member] {
+    static func mapFrom(members: MemberBlockItemListSyntax) -> [Member] {
         members
             .compactMap { $0.decl.as(VariableDeclSyntax.self) }
             .filter(\.isStoredProperty)
@@ -33,17 +33,15 @@ struct MemberMapper {
     }
 
     private static func hasStaticModifier(_ variable: VariableDeclSyntax) -> Bool {
-        guard let modifiers = variable.modifiers else { return false }
-        return modifiers.contains(where: { $0.name.text.contains("static") })
+        variable.modifiers.contains(where: { $0.name.text.contains("static") })
     }
 
     private static func hasPrivateModifier(_ variable: VariableDeclSyntax) -> Bool {
-        guard let modifiers = variable.modifiers else { return false }
-        return modifiers.contains(where: { $0.name.text.contains("private") })
+        variable.modifiers.contains(where: { $0.name.text.contains("private") })
     }
 }
 
-// SOURCE: https://github.com/DougGregor/swift-macro-examples
+// SOURCE: https://github.com/apple/swift-syntax/tree/main/Examples
 private extension VariableDeclSyntax {
     /// Determine whether this variable has the syntax of a stored property.
     ///
@@ -54,21 +52,25 @@ private extension VariableDeclSyntax {
             return false
         }
 
-        switch bindings.first!.accessor {
+        switch bindings.first!.accessorBlock?.accessors {
         case .none:
             return true
-        case .accessors(let node):
-            for accessor in node.accessors {
-                switch accessor.accessorKind.tokenKind {
+
+        case .accessors(let accessors):
+            for accessor in accessors {
+                switch accessor.accessorSpecifier.tokenKind {
                 case .keyword(.willSet), .keyword(.didSet):
                     // Observers can occur on a stored property.
                     break
+
                 default:
                     // Other accessors make it a computed property.
                     return false
                 }
             }
+
             return true
+
         case .getter:
             return false
         }

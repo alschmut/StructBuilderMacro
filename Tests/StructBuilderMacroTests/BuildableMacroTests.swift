@@ -21,6 +21,7 @@ final class BuildableMacroTests: XCTestCase {
             struct Person {
                 let name: String
             }
+
             struct PersonBuilder {
                 var name: String = ""
 
@@ -50,6 +51,7 @@ final class BuildableMacroTests: XCTestCase {
                 let name: String
                 let middleName: String
             }
+
             struct PersonBuilder {
                 var name: String = ""
                 var middleName: String = ""
@@ -79,6 +81,7 @@ final class BuildableMacroTests: XCTestCase {
             struct MyObject {
                 let m1: MyOtherObject
             }
+
             struct MyObjectBuilder {
                 var m1: MyOtherObject = MyOtherObjectBuilder().build()
 
@@ -110,6 +113,7 @@ final class BuildableMacroTests: XCTestCase {
                 let m2: [MyOtherObject]
                 let m3: [String: String]
             }
+
             struct MyObjectBuilder {
                 var m1: [String] = []
                 var m2: [MyOtherObject] = []
@@ -143,6 +147,7 @@ final class BuildableMacroTests: XCTestCase {
                 let m1: String?
                 let m2: [Int]?
             }
+
             struct MyObjectBuilder {
                 var m1: String?
                 var m2: [Int]?
@@ -176,6 +181,7 @@ final class BuildableMacroTests: XCTestCase {
                     "myText"
                 }
             }
+
             struct MyObjectBuilder {
 
                 func build() -> MyObject {
@@ -203,6 +209,7 @@ final class BuildableMacroTests: XCTestCase {
                 static let unwantedStaticVariable1: String = ""
                 static var unwantedStaticVariable2: String = ""
             }
+
             struct MyObjectBuilder {
 
                 func build() -> MyObject {
@@ -228,6 +235,7 @@ final class BuildableMacroTests: XCTestCase {
             struct MyObject {
                 let m1: String!
             }
+
             struct MyObjectBuilder {
                 var m1: String!
 
@@ -259,6 +267,7 @@ final class BuildableMacroTests: XCTestCase {
                 private var m2: String?
                 public var m3: String?
             }
+
             struct MyObjectBuilder {
                 var m1: String?
                 var m3: String?
@@ -332,6 +341,7 @@ final class BuildableMacroTests: XCTestCase {
                 let m22: CGSize
                 let m23: CGVector
             }
+            
             struct MyObjectBuilder {
                 var m01: String = ""
                 var m02: Int = 0

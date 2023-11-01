@@ -12,7 +12,7 @@ let package = Package(
         .executable(name: "StructBuilderClient", targets: ["StructBuilderClient"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-syntax.git", from: "509.0.0-swift-5.9-DEVELOPMENT-SNAPSHOT-2023-07-10-a"),
+        .package(url: "https://github.com/apple/swift-syntax.git", from: "509.0.2"),
     ],
     targets: [
         .macro(
