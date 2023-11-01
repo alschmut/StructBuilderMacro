@@ -92,7 +92,7 @@ assuming that the `UnknownTypeBuilder` was created somewhere else.
 
 Why did I create the macro? 
 - I created the macro out of personal curiosity and the hope to be able to reduce repetitive code in my own projects
-- I am not using the macro in any real project yet and will probably wait until Xcode 15 is released, in case there will be any big unforeseen changes
+- I am not using the macro in any real project yet, mostly because I don't know yet how to get the first enum case when the type is en enum. If anybody knows how, please reach out :)
 
 Will I continue developing the macro?
 - Depending on my own use cases, which I am/was trying to solve, I might continue developing the macro, **though, I do guarantee to keep the project up to date**
