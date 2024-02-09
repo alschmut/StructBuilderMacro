@@ -8,8 +8,7 @@ let package = Package(
     name: "StructBuilder",
     platforms: [.macOS(.v10_15), .iOS(.v13), .tvOS(.v13), .watchOS(.v6), .macCatalyst(.v13)],
     products: [
-        .library(name: "StructBuilder", targets: ["StructBuilder"]),
-        .executable(name: "StructBuilderClient", targets: ["StructBuilderClient"]),
+        .library(name: "StructBuilder", targets: ["StructBuilder"])
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-syntax.git", from: "509.1.1"),
