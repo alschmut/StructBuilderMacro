@@ -7,22 +7,20 @@
 
 import SwiftSyntax
 
-func makeVariableDecl(member: Member) -> VariableDeclSyntax {
+func makeVariableDecl(extractedMember: ExtractedMember) -> VariableDeclSyntax {
     VariableDeclSyntax(
         bindingSpecifier: .keyword(.var),
         bindings: PatternBindingListSyntax {
             PatternBindingSyntax(
-                pattern: IdentifierPatternSyntax(identifier: member.identifier),
-                typeAnnotation: TypeAnnotationSyntax(type: member.type),
-                initializer: getDefaultInitializerClause(type: member.type)
+                pattern: IdentifierPatternSyntax(identifier: extractedMember.identifier),
+                typeAnnotation: TypeAnnotationSyntax(type: extractedMember.type),
+                initializer: getDefaultInitializerClause(type: extractedMember.type)
             )
         }
     )
 }
 
 private func getDefaultInitializerClause(type: TypeSyntax) -> InitializerClauseSyntax? {
-    guard let defaultExpr = TypeMapper.getDefaultValueFor(type: type) else {
-        return nil
-    }
+    guard let defaultExpr = getDefaultValueForType(type) else { return nil }
     return InitializerClauseSyntax(value: defaultExpr)
 }

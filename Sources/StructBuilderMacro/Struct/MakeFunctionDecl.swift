@@ -7,56 +7,33 @@
 
 import SwiftSyntax
 
-func makeFunctionDecl(name: TokenSyntax, members: [Member]) -> FunctionDeclSyntax {
-    let buildFunctionReturnStatement = ReturnStmtSyntax(expression:
-        ExprSyntax(FunctionCallExprSyntax(
-            calledExpression: DeclReferenceExprSyntax(baseName: name.trimmed),
-            leftParen: .leftParenToken(trailingTrivia: Trivia.spaces(4)),
-            arguments: LabeledExprListSyntax {
-                for member in members {
-                    LabeledExprSyntax(
-                        leadingTrivia: .newline,
-                        label: member.identifier,
-                        colon: TokenSyntax(TokenKind.colon, presence: .present),
-                        expression: ExprSyntax(stringLiteral: member.identifier.text)
-                    )
-                }
-            },
-            rightParen: .rightParenToken(leadingTrivia: .newline)
-        ))
-    )
-
-    let buildFunctionSignature = FunctionSignatureSyntax(
-        parameterClause: FunctionParameterClauseSyntax(parameters: FunctionParameterListSyntax([])),
-        returnClause: ReturnClauseSyntax(type: TypeSyntax(stringLiteral: name.text))
-    )
-
-    return FunctionDeclSyntax(name: .identifier("build"), signature: buildFunctionSignature) {
-        CodeBlockItemListSyntax {
-            CodeBlockItemSyntax(
-                item: CodeBlockItemListSyntax.Element.Item.stmt(StmtSyntax(buildFunctionReturnStatement))
+func makeFunctionDecl(name: TokenSyntax, extractedMembers: [ExtractedMember]) -> FunctionDeclSyntax {
+    makeBuildFunctionDecl(returningType: TypeSyntax(stringLiteral: name.text)) {
+        ReturnStmtSyntax(expression:
+            ExprSyntax(
+                makeFunctionCallExpr(name: name, extractedMembers: extractedMembers)
             )
-        }
+        )
     }
 }
 
-func makeFunctionDeclForEnum(returningType: TypeSyntax, withValue value: TokenSyntax) -> FunctionDeclSyntax {
-    let buildFunctionReturnStatement = ReturnStmtSyntax(expression:
-        ExprSyntax(FunctionCallExprSyntax(
-            calledExpression: DeclReferenceExprSyntax(baseName: value.trimmed),
-            arguments: LabeledExprListSyntax([])
-        ))
+private func makeFunctionCallExpr(name: TokenSyntax, extractedMembers: [ExtractedMember]) -> FunctionCallExprSyntax{
+    FunctionCallExprSyntax(
+        calledExpression: DeclReferenceExprSyntax(baseName: name.trimmed),
+        leftParen: .leftParenToken(trailingTrivia: Trivia.spaces(4)),
+        arguments: makeLabeledExprList(extractedMembers: extractedMembers),
+        rightParen: .rightParenToken(leadingTrivia: .newline)
     )
+}
 
-    let buildFunctionSignature = FunctionSignatureSyntax(
-        parameterClause: FunctionParameterClauseSyntax(parameters: FunctionParameterListSyntax([])),
-        returnClause: ReturnClauseSyntax(type: returningType)
-    )
-
-    return FunctionDeclSyntax(name: .identifier("build"), signature: buildFunctionSignature) {
-        CodeBlockItemListSyntax {
-            CodeBlockItemSyntax(
-                item: CodeBlockItemListSyntax.Element.Item.stmt(StmtSyntax(buildFunctionReturnStatement))
+private func makeLabeledExprList(extractedMembers: [ExtractedMember]) -> LabeledExprListSyntax {
+    LabeledExprListSyntax {
+        for extractedMember in extractedMembers {
+            LabeledExprSyntax(
+                leadingTrivia: .newline,
+                label: extractedMember.identifier,
+                colon: TokenSyntax(TokenKind.colon, presence: .present),
+                expression: ExprSyntax(stringLiteral: extractedMember.identifier.text)
             )
         }
     }
