@@ -16,7 +16,7 @@ func makeEnumBuilder(enumDecl: EnumDeclSyntax) throws -> StructDeclSyntax {
     let structIdentifier = getStructBuilderName(from: enumDecl.name)
     let valueVariable = TokenSyntax(stringLiteral: "value")
     let returningType = TypeSyntax(stringLiteral: enumDecl.name.text)
-    let extractedMember = ExtractedMemberWithValue(
+    let enumMember = EnumMember(
         identifier: valueVariable,
         type: returningType,
         value: firstCaseName
@@ -24,10 +24,10 @@ func makeEnumBuilder(enumDecl: EnumDeclSyntax) throws -> StructDeclSyntax {
 
     return StructDeclSyntax(name: structIdentifier) {
         MemberBlockItemListSyntax {
-            MemberBlockItemSyntax(decl: makeVariableDeclWithValue(extractedMember: extractedMember))
+            MemberBlockItemSyntax(decl: makeVariableDeclWithValue(enumMember: enumMember))
             MemberBlockItemSyntax(
                 leadingTrivia: .newlines(2),
-                decl: makeFunctionDeclWithValue(extractedMember: extractedMember)
+                decl: makeFunctionDeclWithValue(enumMember: enumMember)
             )
         }
     }

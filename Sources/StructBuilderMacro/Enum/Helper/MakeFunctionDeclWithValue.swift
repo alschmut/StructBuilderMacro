@@ -7,12 +7,12 @@
 
 import SwiftSyntax
 
-func makeFunctionDeclWithValue(extractedMember: ExtractedMemberWithValue) -> FunctionDeclSyntax {
-    makeBuildFunctionDecl(returningType: extractedMember.type) {
+func makeFunctionDeclWithValue(enumMember: EnumMember) -> FunctionDeclSyntax {
+    makeBuildFunctionDecl(returningType: enumMember.type) {
         ReturnStmtSyntax(expression:
             ExprSyntax(
                 FunctionCallExprSyntax(
-                    calledExpression: DeclReferenceExprSyntax(baseName: extractedMember.identifier.trimmed),
+                    calledExpression: DeclReferenceExprSyntax(baseName: enumMember.identifier.trimmed),
                     arguments: LabeledExprListSyntax([])
                 )
             )

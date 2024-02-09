@@ -7,14 +7,14 @@
 
 import SwiftSyntax
 
-func makeVariableDeclWithValue(extractedMember: ExtractedMemberWithValue) -> VariableDeclSyntax {
+func makeVariableDeclWithValue(enumMember: EnumMember) -> VariableDeclSyntax {
     VariableDeclSyntax(
         bindingSpecifier: .keyword(.var),
         bindings: PatternBindingListSyntax {
             PatternBindingSyntax(
-                pattern: IdentifierPatternSyntax(identifier: extractedMember.identifier),
-                typeAnnotation: TypeAnnotationSyntax(type: extractedMember.type),
-                initializer: InitializerClauseSyntax(value: MemberAccessExprSyntax(name: extractedMember.value))
+                pattern: IdentifierPatternSyntax(identifier: enumMember.identifier),
+                typeAnnotation: TypeAnnotationSyntax(type: enumMember.type),
+                initializer: InitializerClauseSyntax(value: MemberAccessExprSyntax(name: enumMember.value))
             )
         }
     )
