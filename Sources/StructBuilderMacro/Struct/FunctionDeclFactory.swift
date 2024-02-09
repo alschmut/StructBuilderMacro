@@ -8,10 +8,10 @@
 import SwiftSyntax
 
 struct FunctionDeclFactory {
-    static func makeFunctionDeclFrom(structDeclaration: StructDeclSyntax, members: [Member]) -> FunctionDeclSyntax {
+    static func makeFunctionDeclFrom(name: TokenSyntax, members: [Member]) -> FunctionDeclSyntax {
         let buildFunctionReturnStatement = ReturnStmtSyntax(expression:
             ExprSyntax(FunctionCallExprSyntax(
-                calledExpression: DeclReferenceExprSyntax(baseName: structDeclaration.name.trimmed),
+                calledExpression: DeclReferenceExprSyntax(baseName: name.trimmed),
                 leftParen: .leftParenToken(trailingTrivia: Trivia.spaces(4)),
                 arguments: LabeledExprListSyntax {
                     for member in members {
@@ -29,7 +29,7 @@ struct FunctionDeclFactory {
         
         let buildFunctionSignature = FunctionSignatureSyntax(
             parameterClause: FunctionParameterClauseSyntax(parameters: FunctionParameterListSyntax([])),
-            returnClause: ReturnClauseSyntax(type: TypeSyntax(stringLiteral: structDeclaration.name.text))
+            returnClause: ReturnClauseSyntax(type: TypeSyntax(stringLiteral: name.text))
         )
         
         return FunctionDeclSyntax(name: .identifier("build"), signature: buildFunctionSignature) {

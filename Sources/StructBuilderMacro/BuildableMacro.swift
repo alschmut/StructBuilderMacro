@@ -45,26 +45,16 @@ public struct BuildableMacro: PeerMacro {
         providingPeersOf declaration: Declaration,
         in context: Context
     ) throws -> [SwiftSyntax.DeclSyntax] where Context : SwiftSyntaxMacros.MacroExpansionContext, Declaration : SwiftSyntax.DeclSyntaxProtocol {
-        guard let structDeclaration = declaration.as(StructDeclSyntax.self) else {
-            throw "Macro can only be applied to structs"
+        if let structDecl = declaration.as(StructDeclSyntax.self) {
+            let structBuilder = makeStructBuilder(structDecl: structDecl)
+            return [DeclSyntax(structBuilder)]
         }
 
-        let members = MemberMapper.mapFrom(members: structDeclaration.memberBlock.members)
-
-        let structIdentifier = TokenSyntax.identifier(structDeclaration.name.text + "Builder")
-            .with(\.trailingTrivia, .spaces(1))
-
-        let structureDeclaration = StructDeclSyntax(name: structIdentifier) {
-            MemberBlockItemListSyntax {
-                for member in members {
-                    MemberBlockItemSyntax(decl: VariableDeclFactory.makeVariableDeclFrom(member: member))
-                }
-                MemberBlockItemSyntax(
-                    leadingTrivia: .newlines(2),
-                    decl: FunctionDeclFactory.makeFunctionDeclFrom(structDeclaration: structDeclaration, members: members)
-                )
-            }
+        if let enumDecl = declaration.as(EnumDeclSyntax.self) {
+            let enumBuilder = makeEnumBuilder(enumDecl: enumDecl)
+            return [DeclSyntax(enumBuilder)]
         }
-        return [DeclSyntax(structureDeclaration)]
+
+        throw "Macro can only be applied to struct and enum declarations"
     }
 }

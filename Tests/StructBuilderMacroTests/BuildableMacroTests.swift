@@ -399,4 +399,31 @@ final class BuildableMacroTests: XCTestCase {
             macros: testMacros
         )
     }
+
+    func test_should_create_macro_from_enum() {
+        assertMacroExpansion(
+            """
+            @Buildable
+            enum MyEnum {
+                case c1
+            }
+            """,
+            expandedSource: """
+
+            @Buildable
+            enum MyEnum {
+                case c1
+            }
+
+            struct MyEnumBuilder {
+                var myEnum: MyEnum = = .c1
+
+                func build() -> MyEnum {
+                    return myEnum
+                }
+            }
+            """,
+            macros: testMacros
+        )
+    }
 }
