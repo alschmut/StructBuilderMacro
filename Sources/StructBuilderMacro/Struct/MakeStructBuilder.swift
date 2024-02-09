@@ -5,7 +5,6 @@
 //  Created by Alexander Schmutz on 09.02.24.
 //
 
-import Foundation
 import SwiftSyntax
 
 func makeStructBuilder(structDecl: StructDeclSyntax) -> StructDeclSyntax {
