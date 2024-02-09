@@ -8,7 +8,8 @@
 import SwiftSyntax
 
 func getFirstEnumCaseName(from enumDecl: EnumDeclSyntax) throws -> TokenSyntax {
-    guard let firstCaseName = enumDecl.memberBlock.members.first?.decl.as(EnumCaseDeclSyntax.self)?.elements.first?.name else {
+    let enumCaseDecls = enumDecl.memberBlock.members.compactMap { $0.decl.as(EnumCaseDeclSyntax.self) }
+    guard let firstCaseName = enumCaseDecls.first?.elements.first?.name else {
         throw "Missing enum case"
     }
     return firstCaseName

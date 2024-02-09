@@ -36,5 +36,6 @@ struct MyObject {
 
 @Buildable
 enum MyEnum {
+    case `none`
     case myCase
 }
