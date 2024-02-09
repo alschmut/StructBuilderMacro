@@ -51,7 +51,7 @@ public struct BuildableMacro: PeerMacro {
         }
 
         if let enumDecl = declaration.as(EnumDeclSyntax.self) {
-            let enumBuilder = makeEnumBuilder(enumDecl: enumDecl)
+            let enumBuilder = try makeEnumBuilder(enumDecl: enumDecl)
             return [DeclSyntax(enumBuilder)]
         }
 

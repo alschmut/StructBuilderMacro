@@ -24,10 +24,10 @@ class BuildableEnumTests: XCTestCase {
             }
 
             struct MyEnumBuilder {
-                var myEnum: MyEnum = .myCase
+                var value: MyEnum = .myCase
 
                 func build() -> MyEnum {
-                    return myEnum
+                    return value
                 }
             }
 

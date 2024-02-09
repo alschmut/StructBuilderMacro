@@ -39,3 +39,25 @@ func makeFunctionDecl(name: TokenSyntax, members: [Member]) -> FunctionDeclSynta
         }
     }
 }
+
+func makeFunctionDeclForEnum(returningType: TypeSyntax, withValue value: TokenSyntax) -> FunctionDeclSyntax {
+    let buildFunctionReturnStatement = ReturnStmtSyntax(expression:
+        ExprSyntax(FunctionCallExprSyntax(
+            calledExpression: DeclReferenceExprSyntax(baseName: value.trimmed),
+            arguments: LabeledExprListSyntax([])
+        ))
+    )
+
+    let buildFunctionSignature = FunctionSignatureSyntax(
+        parameterClause: FunctionParameterClauseSyntax(parameters: FunctionParameterListSyntax([])),
+        returnClause: ReturnClauseSyntax(type: returningType)
+    )
+
+    return FunctionDeclSyntax(name: .identifier("build"), signature: buildFunctionSignature) {
+        CodeBlockItemListSyntax {
+            CodeBlockItemSyntax(
+                item: CodeBlockItemListSyntax.Element.Item.stmt(StmtSyntax(buildFunctionReturnStatement))
+            )
+        }
+    }
+}

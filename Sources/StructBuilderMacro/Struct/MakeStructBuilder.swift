@@ -11,8 +11,7 @@ import SwiftSyntax
 func makeStructBuilder(structDecl: StructDeclSyntax) -> StructDeclSyntax {
     let members = MemberMapper.mapFrom(members: structDecl.memberBlock.members)
 
-    let structIdentifier = TokenSyntax.identifier(structDecl.name.text + "Builder")
-        .with(\.trailingTrivia, .spaces(1))
+    let structIdentifier = makeStructBuilderName(from: structDecl.name)
 
     return StructDeclSyntax(name: structIdentifier) {
         MemberBlockItemListSyntax {
