@@ -32,3 +32,21 @@ struct MyObject {
     let m27: [String: String]
     var m28: String
 }
+
+//@Buildable
+enum MyEnum {
+    case myCase
+}
+
+//@Buildable
+//enum MyEnum {
+//    case myCase
+//}
+
+struct MyEnumBuilder {
+    var myEnum: MyEnum = .myCase
+
+    func build() -> MyEnum {
+        return myEnum
+    }
+}

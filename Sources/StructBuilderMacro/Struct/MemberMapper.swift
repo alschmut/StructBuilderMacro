@@ -7,8 +7,6 @@
 
 import SwiftSyntax
 
-typealias Member = (identifier: TokenSyntax, type: TypeSyntax)
-
 struct MemberMapper {
     static func mapFrom(members: MemberBlockItemListSyntax) -> [Member] {
         members

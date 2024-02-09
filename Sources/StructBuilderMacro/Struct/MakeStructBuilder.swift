@@ -1,5 +1,5 @@
 //
-//  StructMapper.swift
+//  MakeStructBuilder.swift
 //
 //
 //  Created by Alexander Schmutz on 09.02.24.
@@ -17,11 +17,11 @@ func makeStructBuilder(structDecl: StructDeclSyntax) -> StructDeclSyntax {
     return StructDeclSyntax(name: structIdentifier) {
         MemberBlockItemListSyntax {
             for member in members {
-                MemberBlockItemSyntax(decl: VariableDeclFactory.makeVariableDeclFrom(member: member))
+                MemberBlockItemSyntax(decl: makeVariableDecl(member: member))
             }
             MemberBlockItemSyntax(
                 leadingTrivia: .newlines(2),
-                decl: FunctionDeclFactory.makeFunctionDeclFrom(name: structDecl.name, members: members)
+                decl: makeFunctionDecl(name: structDecl.name, members: members)
             )
         }
     }

@@ -405,23 +405,23 @@ final class BuildableMacroTests: XCTestCase {
             """
             @Buildable
             enum MyEnum {
-                case c1
+                case myCase
             }
             """,
             expandedSource: """
 
-            @Buildable
             enum MyEnum {
-                case c1
+                case myCase
             }
 
             struct MyEnumBuilder {
-                var myEnum: MyEnum = = .c1
+                var myEnum: MyEnum = .myCase
 
                 func build() -> MyEnum {
                     return myEnum
                 }
             }
+
             """,
             macros: testMacros
         )
