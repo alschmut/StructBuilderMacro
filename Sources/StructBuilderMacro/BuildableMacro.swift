@@ -55,6 +55,11 @@ public struct BuildableMacro: PeerMacro {
             return [DeclSyntax(enumBuilder)]
         }
 
+        if let classDecl = declaration.as(ClassDeclSyntax.self) {
+            let classBuilder = try makeClassBuilder(classDecl: classDecl)
+            return [DeclSyntax(classBuilder)]
+        }
+
         throw "Macro can only be applied to struct and enum declarations"
     }
 }
