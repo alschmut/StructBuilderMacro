@@ -1,9 +1,9 @@
-# Swift Struct Builder Macro
+# Swift Builder Macro
 An attached swift macro that produces a peer struct which implements the builder pattern.
 This allows the creation of the struct with minimal effort using default values.
 
-> **Important!** This macro is intended to be used for simple structs without explicit initialiser.
-The macro is by no means a perfect solution that works for all struct implementations.
+> **Important!** This macro is intended to be used for simple structs and enums without explicit initialiser.
+The macro is by no means a perfect solution that works for all struct or enum implementations.
 The macro makes a best guess to decide how the implicit memberwise initialiser could look like and might fail if some edge cases have not been considered.
 The macro was created out of personal interest and for a few smaller private projects.
 
@@ -15,6 +15,7 @@ struct Person {
     let age: Int
     let address: Address
     let hobby: String?
+    let favouriteSeason: Season
     
     var likesReading: Bool {
         hobby == "Reading" 
@@ -23,8 +24,16 @@ struct Person {
     static let minimumAge = 21
 }
 
+@Buildable
+enum Season {
+    case .winter
+    case .spring
+    case .summer
+    case .autumn
+}
+
 let anyPerson = PersonBuilder().build()
-let max = PersonBuilder(name: "Max").build()
+let max = PersonBuilder(name: "Max", favouriteSeason: .summer).build()
 ```
 Expanded macro
 ```swift
@@ -33,22 +42,31 @@ struct PersonBuilder {
     var age: Int = 0
     var address: Address = AddressBuilder().build()
     var hobby: String?
+    var favouriteSeason: SeasonBuilder = SeasonBuilder().build()
 
     func build() -> Person {
         return Person(
             name: name,
             age: age,
             address: address,
-            hobby: hobby
+            hobby: hobby,
+            favouriteSeason: favouriteSeason
         )
+    }
+}
+
+struct SeasonBuilder {
+    var value: Season = .spring
+    
+    func build() -> Season {
+        return value
     }
 }
 ```
 
 ### Limitations
 - The list of default values is limited to the values specified in the below table. The list can be extended, if necessary.
-- For an enum Type `MyEnum` the default value is currently set to `MyEnumBuilder().build()`, instead to the first enum case
-- The macro only works on `struct` definitions
+- The macro only works on `struct` and `enum` definitions
 
 
 ### Specified default values
@@ -92,7 +110,6 @@ assuming that the `UnknownTypeBuilder` was created somewhere else.
 
 Why did I create the macro? 
 - I created the macro out of personal curiosity and the hope to be able to reduce repetitive code in my own projects
-- I am not using the macro in any real project yet, mostly because I don't know yet how to get the first enum case when the type is en enum. If anybody knows how, please reach out :)
 
 Will I continue developing the macro?
 - Depending on my own use cases, which I am/was trying to solve, I might continue developing the macro, **though, I do guarantee to keep the project up to date**

@@ -8,26 +8,40 @@
 ///         let name: String
 ///         let age: Int
 ///         let address: Address
+///         let favouriteSeason: Season
+///     }
+///
+///     @Buildable
+///     enum Season {
+///         case .winter
+///         case .spring
+///         case .summer
+///         case .autumn
 ///     }
 ///
 ///  will expand to
 ///
-///     struct Person {
-///         let name: String
-///         let age: Int
-///         let address: Address
-///     }
 ///     struct PersonBuilder {
 ///         var name: String = ""
 ///         var age: Int = 0
 ///         var address: Address = AddressBuilder().build()
+///         var favouriteSeason: SeasonBuilder = SeasonBuilder().build()
 ///
 ///         func build() -> Person {
 ///             return Person(
 ///                 name: name,
 ///                 age: age,
-///                 address: address
+///                 address: address,
+///                 favouriteSeason: favouriteSeason
 ///             )
+///         }
+///     }
+///
+///     struct SeasonBuilder {
+///         var value: Season = .spring
+///
+///         func build() -> Season {
+///             return value
 ///         }
 ///     }
 @attached(peer, names: suffixed(Builder))
