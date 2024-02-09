@@ -2,10 +2,8 @@
 An attached swift macro that produces a peer struct which implements the builder pattern.
 This allows the creation of the struct with minimal effort using default values.
 
-> **Important!** This macro is intended to be used for simple structs and enums without explicit initialiser.
-The macro is by no means a perfect solution that works for all struct or enum implementations.
-The macro makes a best guess to decide how the implicit memberwise initialiser could look like and might fail if some edge cases have not been considered.
-The macro was created out of personal interest and for a few smaller private projects.
+> **Important!** This macro is intended to be used for simple structs, enums and classes 
+and is by no means a perfect solution that works for all implementations (see below limitations).
 
 ### Example
 ```swift
@@ -32,8 +30,20 @@ enum Season {
     case .autumn
 }
 
+@Buildable
+class AppState {
+    let persons: [Person]
+
+    init(
+        persons: [Person]
+    ) {
+        self.person = person
+    }
+}
+
 let anyPerson = PersonBuilder().build()
 let max = PersonBuilder(name: "Max", favouriteSeason: .summer).build()
+let appState = AppStateBuilder(persons: [max]).build()
 ```
 Expanded macro
 ```swift
@@ -62,12 +72,24 @@ struct SeasonBuilder {
         return value
     }
 }
+
+struct AppStateBuilder {
+    var persons: [Person] = []
+
+    func build() -> AppState {
+        return AppState(
+            persons: persons
+        )
+    }
+}
 ```
 
 ### Limitations
-- The list of default values is limited to the values specified in the below table. The list can be extended, if necessary.
-- The macro only works on `struct` and `enum` definitions
-
+- The list of default values is limited to the values specified in the below table. All other types will require another builder to be defined.
+- The macro only works on `struct`, `enum` and `class` definitions
+- If a builder for a specific declaration can not be generated, you can always choose to create it yourself.
+- About classes: The macro uses the first initialiser of a class if multiple initialiser exist.
+- About structs: The macro makes a best guess to decide how the implicit memberwise initializer could look like and might fail for some unforeseen declarations.
 
 ### Specified default values
 The list of default values is limited to the values specified in the below table. 

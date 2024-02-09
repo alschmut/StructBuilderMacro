@@ -19,6 +19,17 @@
 ///         case .autumn
 ///     }
 ///
+///     @Buildable
+///     class AppState {
+///         let persons: [Person]
+///
+///         init(
+///             persons: [Person]
+///         ) {
+///             self.person = person
+///         }
+///     }
+///
 ///  will expand to
 ///
 ///     struct PersonBuilder {
@@ -42,6 +53,16 @@
 ///
 ///         func build() -> Season {
 ///             return value
+///         }
+///     }
+///
+///     struct AppStateBuilder {
+///         var persons: [Person] = []
+///
+///         func build() -> AppState {
+///             return AppState(
+///                 persons: persons
+///             )
 ///         }
 ///     }
 @attached(peer, names: suffixed(Builder))

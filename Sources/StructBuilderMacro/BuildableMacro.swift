@@ -9,36 +9,6 @@ struct BuildablePlugin: CompilerPlugin {
     ]
 }
 
-/// Implementation of the `Buildable` macro, which takes a struct declaration
-/// and produces a peer struct which implements the builder pattern
-///
-///     @Buildable
-///     struct Person {
-///         let name: String
-///         let age: Int
-///         let address: Address
-///     }
-///
-///  will expand to
-///
-///     struct Person {
-///         let name: String
-///         let age: Int
-///         let address: Address
-///     }
-///     struct PersonBuilder {
-///         var name: String = ""
-///         var age: Int = 0
-///         var address: Address = AddressBuilder().build()
-///
-///         func build() -> Person {
-///             return Person(
-///                 name: name,
-///                 age: age,
-///                 address: address
-///             )
-///         }
-///     }
 public struct BuildableMacro: PeerMacro {
     public static func expansion<Context, Declaration>(
         of node: SwiftSyntax.AttributeSyntax,

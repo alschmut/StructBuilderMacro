@@ -39,3 +39,14 @@ enum MyEnum {
     case `none`
     case myCase
 }
+
+@Buildable
+class MyClass {
+    var m1: String = ""
+
+    init(
+        m1: String
+    ) {
+        self.m1 = m1
+    }
+}
