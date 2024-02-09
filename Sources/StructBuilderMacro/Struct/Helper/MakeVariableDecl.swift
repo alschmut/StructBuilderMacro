@@ -7,14 +7,14 @@
 
 import SwiftSyntax
 
-func makeVariableDecl(extractedMember: ExtractedMember) -> VariableDeclSyntax {
+func makeVariableDecl(structMember: StructMember) -> VariableDeclSyntax {
     VariableDeclSyntax(
         bindingSpecifier: .keyword(.var),
         bindings: PatternBindingListSyntax {
             PatternBindingSyntax(
-                pattern: IdentifierPatternSyntax(identifier: extractedMember.identifier),
-                typeAnnotation: TypeAnnotationSyntax(type: extractedMember.type),
-                initializer: getDefaultInitializerClause(type: extractedMember.type)
+                pattern: IdentifierPatternSyntax(identifier: structMember.identifier),
+                typeAnnotation: TypeAnnotationSyntax(type: structMember.type),
+                initializer: getDefaultInitializerClause(type: structMember.type)
             )
         }
     )

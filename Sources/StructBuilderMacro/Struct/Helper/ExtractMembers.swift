@@ -7,7 +7,7 @@
 
 import SwiftSyntax
 
-func extractMembersFrom(_ memberBlockItemList: MemberBlockItemListSyntax) -> [ExtractedMember] {
+func extractMembersFrom(_ memberBlockItemList: MemberBlockItemListSyntax) -> [StructMember] {
     memberBlockItemList
         .compactMap { $0.decl.as(VariableDeclSyntax.self) }
         .filter(\.isStoredProperty)
@@ -17,7 +17,7 @@ func extractMembersFrom(_ memberBlockItemList: MemberBlockItemListSyntax) -> [Ex
             guard let patternBinding = $0.bindings.first else { return nil }
             guard let identifier = getIdentifierFromMember(patternBinding) else { return nil }
             guard let type = getTypeFromMember(patternBinding) else { return nil }
-            return ExtractedMember(identifier: identifier, type: type)
+            return StructMember(identifier: identifier, type: type)
         }
 }
 
