@@ -1,13 +1,14 @@
-import SwiftSyntaxMacros
-import SwiftSyntaxMacrosTestSupport
+//
+//  BuildableEnumTests.swift
+//
+//
+//  Created by Alexander Schmutz on 13.06.23.
+//
+
 import XCTest
-import StructBuilderMacro
+import SwiftSyntaxMacrosTestSupport
 
-let testMacros: [String: Macro.Type] = [
-    "Buildable": BuildableMacro.self
-]
-
-final class BuildableMacroTests: XCTestCase {
+class BuildableStructTests: XCTestCase {
     func test_should_create_macro_with_one_string_member() {
         assertMacroExpansion(
             """
@@ -395,33 +396,6 @@ final class BuildableMacroTests: XCTestCase {
                     )
                 }
             }
-            """,
-            macros: testMacros
-        )
-    }
-
-    func test_should_create_macro_from_enum() {
-        assertMacroExpansion(
-            """
-            @Buildable
-            enum MyEnum {
-                case myCase
-            }
-            """,
-            expandedSource: """
-
-            enum MyEnum {
-                case myCase
-            }
-
-            struct MyEnumBuilder {
-                var myEnum: MyEnum = .myCase
-
-                func build() -> MyEnum {
-                    return myEnum
-                }
-            }
-
             """,
             macros: testMacros
         )
