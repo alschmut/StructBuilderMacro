@@ -10,9 +10,8 @@ import SwiftSyntax
 
 func makeStructBuilder(structDecl: StructDeclSyntax) -> StructDeclSyntax {
     let structMembers = extractMembersFrom(structDecl.memberBlock.members)
-    let structIdentifier = getStructBuilderName(from: structDecl.name)
 
-    return StructDeclSyntax(name: structIdentifier) {
+    return StructDeclSyntax(name: getStructBuilderName(from: structDecl.name)) {
         MemberBlockItemListSyntax {
             for structMember in structMembers {
                 MemberBlockItemSyntax(decl: makeVariableDecl(structMember: structMember))

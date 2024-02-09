@@ -9,20 +9,13 @@ import Foundation
 import SwiftSyntax
 
 func makeEnumBuilder(enumDecl: EnumDeclSyntax) throws -> StructDeclSyntax {
-    guard let firstCaseName = enumDecl.memberBlock.members.first?.decl.as(EnumCaseDeclSyntax.self)?.elements.first?.name else {
-        throw "Missing enum case"
-    }
-
-    let structIdentifier = getStructBuilderName(from: enumDecl.name)
-    let valueVariable = TokenSyntax(stringLiteral: "value")
-    let returningType = TypeSyntax(stringLiteral: enumDecl.name.text)
     let enumMember = EnumMember(
-        identifier: valueVariable,
-        type: returningType,
-        value: firstCaseName
+        identifier: TokenSyntax(stringLiteral: "value"),
+        type: TypeSyntax(stringLiteral: enumDecl.name.text),
+        value: try getFirstEnumCaseName(from: enumDecl)
     )
-
-    return StructDeclSyntax(name: structIdentifier) {
+    
+    return StructDeclSyntax(name: getStructBuilderName(from: enumDecl.name)) {
         MemberBlockItemListSyntax {
             MemberBlockItemSyntax(decl: makeVariableDeclWithValue(enumMember: enumMember))
             MemberBlockItemSyntax(
