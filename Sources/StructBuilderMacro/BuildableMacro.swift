@@ -16,17 +16,17 @@ public struct BuildableMacro: PeerMacro {
         in context: Context
     ) throws -> [SwiftSyntax.DeclSyntax] where Context : SwiftSyntaxMacros.MacroExpansionContext, Declaration : SwiftSyntax.DeclSyntaxProtocol {
         if let structDecl = declaration.as(StructDeclSyntax.self) {
-            let structBuilder = makeStructBuilder(structDecl: structDecl)
+            let structBuilder = generateBuilderFromStruct(structDecl: structDecl)
             return [DeclSyntax(structBuilder)]
         }
 
         if let enumDecl = declaration.as(EnumDeclSyntax.self) {
-            let enumBuilder = try makeEnumBuilder(enumDecl: enumDecl)
+            let enumBuilder = try generateBuilderFromEnum(enumDecl: enumDecl)
             return [DeclSyntax(enumBuilder)]
         }
 
         if let classDecl = declaration.as(ClassDeclSyntax.self) {
-            let classBuilder = try makeClassBuilder(classDecl: classDecl)
+            let classBuilder = try generateBuilderFromClass(classDecl: classDecl)
             return [DeclSyntax(classBuilder)]
         }
 

@@ -1,5 +1,5 @@
 //
-//  MakeEnumBuilder.swift
+//  GenerateBuilderFromEnum.swift
 //
 //
 //  Created by Alexander Schmutz on 09.02.24.
@@ -7,7 +7,7 @@
 
 import SwiftSyntax
 
-func makeEnumBuilder(enumDecl: EnumDeclSyntax) throws -> StructDeclSyntax {
+func generateBuilderFromEnum(enumDecl: EnumDeclSyntax) throws -> StructDeclSyntax {
     let enumMember = EnumMember(
         identifier: TokenSyntax(stringLiteral: "value"),
         type: TypeSyntax(stringLiteral: enumDecl.name.text),
