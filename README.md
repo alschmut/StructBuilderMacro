@@ -85,11 +85,20 @@ struct AppStateBuilder {
 ```
 
 ### Limitations
-- The list of default values is limited to the values specified in the below table. All other types will require another builder to be defined.
+- The list of default values is limited to the values specified in the below table. All other types will require another builder to be defined
 - The macro only works on `struct`, `enum` and `class` definitions
-- If a builder for a specific declaration can not be generated, you can always choose to create it yourself.
-- About classes: The macro uses the first initialiser of a class if multiple initialiser exist.
-- About structs: The macro makes a best guess to decide how the implicit memberwise initializer could look like and might fail for some unforeseen declarations.
+- If a builder for a specific declaration can not be generated, you can always choose to create it yourself by following the below builder naming pattern:
+    ```swift
+    struct <MyType>Builder {
+
+        func build() -> <MyType> {
+            return ...
+        }
+    }
+    ```
+- If a class or a struct has one or more initialisers, the macro will use the first/top one
+- For structs without an initialiser, the macro makes a best guess to decide how the implicit memberwise initializer could look like. This best guess might fail for declarations that have not been considered during implementation of the macro.
+- As of Swift 5.9 (13.02.2024) it is not possible to use the generated builders inside the SwiftUI `#Preview` closure.
 
 ### Specified default values
 The list of default values is limited to the values specified in the below table. 
