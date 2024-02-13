@@ -30,6 +30,6 @@ public struct BuildableMacro: PeerMacro {
             return [DeclSyntax(classBuilder)]
         }
 
-        throw "Macro can only be applied to struct and enum declarations"
+        throw "Macro can only be applied to struct, class and enum declarations"
     }
 }
