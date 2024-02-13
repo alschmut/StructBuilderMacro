@@ -13,15 +13,5 @@ func makeClassBuilder(classDecl: ClassDeclSyntax) throws -> StructDeclSyntax {
     }
     let structMembers = extractInitializerMembers(from: initialiserDecl)
 
-    return StructDeclSyntax(name: getStructBuilderName(from: classDecl.name)) {
-        MemberBlockItemListSyntax {
-            for structMember in structMembers {
-                MemberBlockItemSyntax(decl: makeVariableDecl(structMember: structMember))
-            }
-            MemberBlockItemSyntax(
-                leadingTrivia: .newlines(2),
-                decl: makeFunctionDecl(name: classDecl.name, structMembers: structMembers)
-            )
-        }
-    }
+    return makeStructBuilderFrom(structName: classDecl.name, structMembers: structMembers)
 }

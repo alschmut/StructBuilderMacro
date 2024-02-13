@@ -9,7 +9,7 @@ import SwiftSyntax
 
 func makeStructBuilder(structDecl: StructDeclSyntax) -> StructDeclSyntax {
     let structMembers = getStructMembers(structDecl: structDecl)
-    return makeStructBuilderFrom(structDecl: structDecl, structMembers: structMembers)
+    return makeStructBuilderFrom(structName: structDecl.name, structMembers: structMembers)
 }
 
 private func getStructMembers(structDecl: StructDeclSyntax) -> [StructMember] {
@@ -20,15 +20,15 @@ private func getStructMembers(structDecl: StructDeclSyntax) -> [StructMember] {
     }
 }
 
-private func makeStructBuilderFrom(structDecl: StructDeclSyntax, structMembers: [StructMember]) -> StructDeclSyntax {
-    StructDeclSyntax(name: getStructBuilderName(from: structDecl.name)) {
+func makeStructBuilderFrom(structName: TokenSyntax, structMembers: [StructMember]) -> StructDeclSyntax {
+    StructDeclSyntax(name: getStructBuilderName(from: structName)) {
         MemberBlockItemListSyntax {
             for structMember in structMembers {
                 MemberBlockItemSyntax(decl: makeVariableDecl(structMember: structMember))
             }
             MemberBlockItemSyntax(
                 leadingTrivia: .newlines(2),
-                decl: makeFunctionDecl(name: structDecl.name, structMembers: structMembers)
+                decl: makeFunctionDecl(name: structName, structMembers: structMembers)
             )
         }
     }
