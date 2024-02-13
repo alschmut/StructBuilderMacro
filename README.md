@@ -2,10 +2,10 @@
 An attached swift macro that produces a peer struct which implements the builder pattern.
 This allows the creation of the struct with minimal effort using default values.
 
-> **Important!** 
-- This macro is intended to be used for simple structs, enums and classes (see below limitations)
-- Please report any issues you might encounter
-- Please star this repository, if your project makes use of it :) 
+> **Important!**
+    <br>- This macro is intended to be used for simple structs, enums and classes (see below limitations)
+    <br>- Please report any issues you might encounter
+    <br>- Please star this repository, if your project makes use of it :) 
 
 ### Example
 ```swift
