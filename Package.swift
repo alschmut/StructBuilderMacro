@@ -5,29 +5,28 @@ import PackageDescription
 import CompilerPluginSupport
 
 let package = Package(
-    name: "StructBuilder",
+    name: "Buildable",
     platforms: [.macOS(.v10_15), .iOS(.v13), .tvOS(.v13), .watchOS(.v6), .macCatalyst(.v13)],
     products: [
-        .library(name: "StructBuilder", targets: ["StructBuilder"]),
-        .library(name: "Buildable", targets: ["StructBuilder"])
+        .library(name: "Buildable", targets: ["Buildable"])
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-syntax.git", from: "509.1.1"),
     ],
     targets: [
         .macro(
-            name: "StructBuilderMacro",
+            name: "BuildableMacro",
             dependencies: [
                 .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
                 .product(name: "SwiftCompilerPlugin", package: "swift-syntax")
             ]
         ),
-        .target(name: "StructBuilder", dependencies: ["StructBuilderMacro"]),
-        .executableTarget(name: "StructBuilderClient", dependencies: ["StructBuilder"]),
+        .target(name: "Buildable", dependencies: ["BuildableMacro"]),
+        .executableTarget(name: "BuildableClient", dependencies: ["Buildable"]),
         .testTarget(
-            name: "StructBuilderMacroTests",
+            name: "BuildableMacroTests",
             dependencies: [
-                "StructBuilderMacro",
+                "BuildableMacro",
                 .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax"),
             ]
         ),

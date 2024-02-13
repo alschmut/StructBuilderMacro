@@ -5,11 +5,11 @@ import SwiftSyntaxMacros
 @main
 struct BuildablePlugin: CompilerPlugin {
     let providingMacros: [Macro.Type] = [
-        BuildableMacro.self
+        BuildableMacroType.self
     ]
 }
 
-public struct BuildableMacro: PeerMacro {
+public struct BuildableMacroType: PeerMacro {
     public static func expansion<Context, Declaration>(
         of node: SwiftSyntax.AttributeSyntax,
         providingPeersOf declaration: Declaration,

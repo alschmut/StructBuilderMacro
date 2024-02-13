@@ -6,8 +6,8 @@
 //
 
 import SwiftSyntaxMacros
-import StructBuilderMacro
+import BuildableMacro
 
 let testMacros: [String: Macro.Type] = [
-    "Buildable": BuildableMacro.self
+    "Buildable": BuildableMacroType.self
 ]

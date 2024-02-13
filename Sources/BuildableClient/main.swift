@@ -1,4 +1,4 @@
-import StructBuilder
+import Buildable
 import Foundation
 
 @Buildable
