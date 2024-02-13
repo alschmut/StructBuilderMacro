@@ -400,4 +400,47 @@ class BuildableStructTests: XCTestCase {
             macros: testMacros
         )
     }
+
+    func test_should_use_members_from_initializer() {
+        assertMacroExpansion(
+            """
+            @Buildable
+            struct MyClass {
+                let m1: String
+                var unused: String = ""
+
+                init(
+                    m1: String = ""
+                ) {
+                    self.m1 = m1
+                }
+            }
+            """,
+            expandedSource: """
+
+            struct MyClass {
+                let m1: String
+                var unused: String = ""
+
+                init(
+                    m1: String = ""
+                ) {
+                    self.m1 = m1
+                }
+            }
+
+            struct MyClassBuilder {
+                var m1: String = ""
+
+                func build() -> MyClass {
+                    return MyClass(
+                        m1: m1
+                    )
+                }
+            }
+
+            """,
+            macros: testMacros
+        )
+    }
 }

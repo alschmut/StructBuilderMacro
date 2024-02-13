@@ -8,7 +8,9 @@
 import SwiftSyntax
 
 func makeClassBuilder(classDecl: ClassDeclSyntax) throws -> StructDeclSyntax {
-    let initialiserDecl = try getFirstInitialiser(from: classDecl)
+    guard let initialiserDecl = getFirstInitialiser(from: classDecl.memberBlock) else {
+        throw "Missing initialiser"
+    }
     let structMembers = extractInitializerMembers(from: initialiserDecl)
 
     return StructDeclSyntax(name: getStructBuilderName(from: classDecl.name)) {
