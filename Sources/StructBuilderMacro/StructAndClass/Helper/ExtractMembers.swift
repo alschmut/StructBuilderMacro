@@ -13,6 +13,7 @@ func extractMembersFrom(_ memberBlockItemList: MemberBlockItemListSyntax) -> [St
         .filter(\.isStoredProperty)
         .filter { !hasStaticModifier($0) }
         .filter { !hasPrivateModifier($0) }
+        .filter { !isConstant($0) }
         .compactMap {
             guard let patternBinding = $0.bindings.first else { return nil }
             guard let identifier = getIdentifierFromMember(patternBinding) else { return nil }
@@ -35,6 +36,11 @@ private func hasStaticModifier(_ variable: VariableDeclSyntax) -> Bool {
 
 private func hasPrivateModifier(_ variable: VariableDeclSyntax) -> Bool {
     variable.modifiers.contains(where: { $0.name.text.contains("private") })
+}
+
+private func isConstant(_ variable: VariableDeclSyntax) -> Bool {
+    variable.bindingSpecifier.text == "let"
+        && variable.bindings.first?.initializer != nil
 }
 
 // SOURCE: https://github.com/apple/swift-syntax/tree/main/Examples

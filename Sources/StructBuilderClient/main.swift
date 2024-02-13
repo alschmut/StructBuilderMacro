@@ -50,3 +50,9 @@ class MyClass {
         self.m1 = m1
     }
 }
+
+@Buildable
+struct MyStruct {
+    let m1: String
+    let fix: String = ""
+}

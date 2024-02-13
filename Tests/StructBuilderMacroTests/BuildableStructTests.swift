@@ -285,6 +285,36 @@ class BuildableStructTests: XCTestCase {
         )
     }
 
+    func test_should_ignore_constant_variables() {
+        assertMacroExpansion(
+            """
+            @Buildable
+            struct MyObject {
+                let m1: String?
+                let myConstant: String = ""
+            }
+            """,
+            expandedSource: """
+
+            struct MyObject {
+                let m1: String?
+                let myConstant: String = ""
+            }
+
+            struct MyObjectBuilder {
+                var m1: String?
+
+                func build() -> MyObject {
+                    return MyObject(
+                        m1: m1
+                    )
+                }
+            }
+            """,
+            macros: testMacros
+        )
+    }
+
     func test_should_set_correct_default_values_for_defined_types() {
         assertMacroExpansion(
             """
