@@ -1,12 +1,16 @@
-# Swift Builder Macro
+# `Buildable` Swift Macro
 An attached swift macro that produces a peer struct which implements the builder pattern.
 This allows the creation of the struct with minimal effort using default values.
 
-> **Important!** This macro is intended to be used for simple structs, enums and classes 
-and is by no means a perfect solution that works for all implementations (see below limitations).
+> **Important!** 
+- This macro is intended to be used for simple structs, enums and classes (see below limitations)
+- Please report any issues you might encounter
+- Please star this repository, if your project makes use of it :) 
 
 ### Example
 ```swift
+import Buildable
+
 @Buildable
 struct Person {
     let name: String
@@ -83,6 +87,11 @@ struct AppStateBuilder {
     }
 }
 ```
+
+### Motivation
+I use builders in the below two scenarios. Having them generated reduces a lot of the boilerplate code:  
+- When creating mock data for unit tests: 
+- When creating fixtures for SwiftUI Previews:
 
 ### Limitations
 - The list of default values is limited to the values specified in the below table. All other types will require another builder to be defined
