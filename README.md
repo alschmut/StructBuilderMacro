@@ -169,4 +169,4 @@ assuming that the `UnknownTypeBuilder` was created somewhere else.
 
 ## Roadmap
 
-The `@Buildable` macro was created out of personal interest to reduce repetitive code in my own projects. I might continue developing the macro depending use cases i stumble across, though, I do not guarantee to keep the project up to date myself. Please create GitHub issues for any feature or bugfix you would like to see wiithin the macro. Contributions or fixes from the Community are most welcome.
+The `@Buildable` macro was created out of personal interest to reduce repetitive code in my own projects. I might continue developing the macro depending use cases I stumble across, though, I do not guarantee to keep the project up to date myself. Please create GitHub issues for any feature or bugfix you would like to see within the macro. Contributions or fixes from the Community are most welcome.
