@@ -1,5 +1,5 @@
 # `@Buildable` Swift Macro
-`@Buildable` is an attached macro for structs, classes and enums, which produces a peer struct implementing the builder pattern. Initialise your object with minimal effort using default values.
+`@Buildable` is an attached swift macro for structs, classes and enums, which produces a peer struct implementing the builder pattern. Initialise your object with minimal effort using default values.
 ```swift
 import Buildable
 
