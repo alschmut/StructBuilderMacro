@@ -27,7 +27,7 @@ private func getIdentifierFromMember(_ patternBinding: PatternBindingSyntax) -> 
 }
 
 private func getTypeFromMember(_ patternBinding: PatternBindingSyntax) -> TypeSyntax? {
-    patternBinding.typeAnnotation?.as(TypeAnnotationSyntax.self)?.type
+    patternBinding.typeAnnotation?.type
 }
 
 private func hasStaticModifier(_ variable: VariableDeclSyntax) -> Bool {
