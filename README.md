@@ -109,11 +109,6 @@ struct AppStateBuilder {
 ## Installation
 The library can be installed using Swift Package Manager.
 
-## Motivation
-I use builders in the below two scenarios. Having them generated reduces a lot of the boilerplate code:  
-- When creating mock data for unit tests
-- When creating fixtures for SwiftUI Previews
-
 ## Limitations
 - The macro only works on `struct`, `enum` and `class` definitions
 - The list of default values is limited to the values specified in the below table. All other types will require another builder to be defined
@@ -128,7 +123,7 @@ I use builders in the below two scenarios. Having them generated reduces a lot o
     ```
 - If a class or a struct has one or more initialisers, the macro will use the first/top one
 - For structs without an initialiser, the macro makes a best guess to decide how the implicit memberwise initializer could look like. This best guess might fail for declarations that have not been considered during implementation of the macro
-- As of Swift 5.9 (13.02.2024) it is not possible to use the generated builders inside the SwiftUI `#Preview` closure
+- As of Swift 5.10 (01.08.2024) it is not possible to use the generated builders inside the SwiftUI `#Preview` closure
 
 ## Builder default values
 The list of default values is limited to the values specified in the below table. 
