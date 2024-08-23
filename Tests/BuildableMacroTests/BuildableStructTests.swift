@@ -315,6 +315,49 @@ class BuildableStructTests: XCTestCase {
         )
     }
 
+    func test_should_add_escaping_keyword_to_function_types() {
+        assertMacroExpansion(
+            """
+            @Buildable
+            struct MyObject {
+                let m1: (() -> String)?
+                let m2: () -> Void
+                let m3: (String) -> Void
+                let m4: (String, Int) -> Void
+            }
+            """,
+            expandedSource: """
+
+            struct MyObject {
+                let m1: (() -> String)?
+                let m2: () -> Void
+                let m3: (String) -> Void
+                let m4: (String, Int) -> Void
+            }
+
+            struct MyObjectBuilder {
+                var m1: (() -> String)?
+                var m2: () -> Void = {
+                }
+                var m3: (String) -> Void = { _ in
+                }
+                var m4: (String, Int) -> Void = { _, _ in
+                }
+
+                func build() -> MyObject {
+                    return MyObject(
+                        m1: m1,
+                        m2: m2,
+                        m3: m3,
+                        m4: m4
+                    )
+                }
+            }
+            """,
+            macros: testMacros
+        )
+    }
+
     func test_should_set_correct_default_values_for_defined_types() {
         assertMacroExpansion(
             """

@@ -140,10 +140,13 @@ assuming that the `UnknownTypeBuilder` was created somewhere else.
 | Float | 0 |
 | Date | Date() |
 | UUID | UUID() |
-| [AnyType] | [] |
-| [AnyType:AnyType] | [:] |
-| AnyType? | *(implicitly nil)* |
-| AnyType! | *(implicitly nil)* |
+| [Any] | [] |
+| [Any:Any] | [:] |
+| Any? | *(implicitly nil)* |
+| Any! | *(implicitly nil)* |
+| () -> Void | {} |
+| (Any) -> Void | { \_ in } |
+| (Any, Any) -> Void | { \_, \_ in } |
 | Int8 | 0 |
 | Int16 | 0 |
 | Int32 | 0 |

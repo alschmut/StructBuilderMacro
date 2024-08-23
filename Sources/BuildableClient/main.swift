@@ -31,6 +31,9 @@ struct MyObject {
     let m26: [String]
     let m27: [String: String]
     var m28: String
+    let m29: () -> Void
+    let m30: (String) -> Void
+    let m31: (String, Int) -> Void
     var myEnum: MyEnum
 }
 

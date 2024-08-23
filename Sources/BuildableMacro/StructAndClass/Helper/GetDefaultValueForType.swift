@@ -18,9 +18,33 @@ func getDefaultValueForType(_ type: TypeSyntax) -> ExprSyntax? {
         return ExprSyntax(stringLiteral: "[]")
     } else if let defaultValue = mapping[type.trimmedDescription] {
         return defaultValue
+    } else if let functionType = type.as(FunctionTypeSyntax.self) {
+        return ExprSyntax(
+            ClosureExprSyntax(
+                signature: defaultClosureSignature(withParameterCount: functionType.parameters.count),
+                statements: CodeBlockItemListSyntax()
+            )
+        )
     } else {
         return ExprSyntax(stringLiteral: type.trimmedDescription + "Builder().build()")
     }
+}
+
+private func defaultClosureSignature(
+    withParameterCount parameterCount: Int
+) -> ClosureSignatureSyntax? {
+    guard parameterCount > 0 else {
+        return nil
+    }
+    return ClosureSignatureSyntax(
+        parameterClause: ClosureSignatureSyntax.ParameterClause(
+            ClosureShorthandParameterListSyntax {
+                for _ in 0 ..< parameterCount {
+                    ClosureShorthandParameterSyntax(name: "_")
+                }
+            }
+        )
+    )
 }
 
 private var mapping: [String: ExprSyntax] = [
