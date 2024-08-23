@@ -22,7 +22,7 @@ func getDefaultValueForType(_ type: TypeSyntax) -> ExprSyntax? {
         return ExprSyntax(
             ClosureExprSyntax(
                 signature: defaultClosureSignature(withParameterCount: functionType.parameters.count),
-                statements: CodeBlockItemListSyntax()
+                statements: closureCodeBlock(typeSyntax: functionType.returnClause.type)
             )
         )
     } else {
@@ -45,6 +45,24 @@ private func defaultClosureSignature(
             }
         )
     )
+}
+
+private func closureCodeBlock(
+    typeSyntax: TypeSyntax
+) -> CodeBlockItemListSyntax {
+    if typeSyntax.as(IdentifierTypeSyntax.self)?.name.text == "Void"  {
+        return CodeBlockItemListSyntax()
+    } else {
+        return CodeBlockItemListSyntax {
+            CodeBlockItemSyntax(
+                item: CodeBlockItemSyntax.Item(
+                    ReturnStmtSyntax(
+                        expression: getDefaultValueForType(typeSyntax)
+                    )
+                )
+            )
+        }
+    }
 }
 
 private var mapping: [String: ExprSyntax] = [

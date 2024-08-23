@@ -403,6 +403,36 @@ class BuildableStructTests: XCTestCase {
         )
     }
 
+    func test_should_set_default_value_for_closures_with_return_type() {
+        assertMacroExpansion(
+            """
+            @Buildable
+            struct MyObject {
+                let m1: () -> String
+            }
+            """,
+            expandedSource: """
+
+            struct MyObject {
+                let m1: () -> String
+            }
+
+            struct MyObjectBuilder {
+                var m1: () -> String = {
+                    return ""
+                }
+
+                func build() -> MyObject {
+                    return MyObject(
+                        m1: m1
+                    )
+                }
+            }
+            """,
+            macros: testMacros
+        )
+    }
+
     func test_should_set_default_value_for_defined_types() {
         assertMacroExpansion(
             """
