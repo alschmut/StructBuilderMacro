@@ -9,7 +9,7 @@ import XCTest
 import SwiftSyntaxMacrosTestSupport
 
 class BuildableStructTests: XCTestCase {
-    func test_should_create_macro_with_one_string_member() {
+    func test_should_create_builder_with_one_string_member() {
         assertMacroExpansion(
             """
             @Buildable
@@ -37,7 +37,7 @@ class BuildableStructTests: XCTestCase {
         )
     }
 
-    func test_should_create_macro_with_two_string_members() {
+    func test_should_create_builder_with_two_string_members() {
         assertMacroExpansion(
             """
             @Buildable
@@ -69,7 +69,39 @@ class BuildableStructTests: XCTestCase {
         )
     }
 
-    func test_should_set_default_to_custom_type_builder() {
+    func test_should_create_builder_with_optional_types() {
+        assertMacroExpansion(
+            """
+            @Buildable
+            struct MyObject {
+                let m1: String?
+                let m2: [Int]?
+            }
+            """,
+            expandedSource: """
+
+            struct MyObject {
+                let m1: String?
+                let m2: [Int]?
+            }
+
+            struct MyObjectBuilder {
+                var m1: String?
+                var m2: [Int]?
+
+                func build() -> MyObject {
+                    return MyObject(
+                        m1: m1,
+                        m2: m2
+                    )
+                }
+            }
+            """,
+            macros: testMacros
+        )
+    }
+
+    func test_should_set_default_value_to_custom_type_builder() {
         assertMacroExpansion(
             """
             @Buildable
@@ -97,7 +129,7 @@ class BuildableStructTests: XCTestCase {
         )
     }
 
-    func test_should_set_default_to_empty_collection() {
+    func test_should_set_default_value_to_empty_collection() {
         assertMacroExpansion(
             """
             @Buildable
@@ -133,30 +165,26 @@ class BuildableStructTests: XCTestCase {
         )
     }
 
-    func test_macro_with_optional_types() {
+    func test_should_set_default_value_to_nil_for_implicitly_unwrapped_optional() {
         assertMacroExpansion(
             """
             @Buildable
             struct MyObject {
-                let m1: String?
-                let m2: [Int]?
+                let m1: String!
             }
             """,
             expandedSource: """
 
             struct MyObject {
-                let m1: String?
-                let m2: [Int]?
+                let m1: String!
             }
 
             struct MyObjectBuilder {
-                var m1: String?
-                var m2: [Int]?
+                var m1: String!
 
                 func build() -> MyObject {
                     return MyObject(
-                        m1: m1,
-                        m2: m2
+                        m1: m1
                     )
                 }
             }
@@ -164,6 +192,7 @@ class BuildableStructTests: XCTestCase {
             macros: testMacros
         )
     }
+
 
     func test_should_ignore_computed_variable() {
         assertMacroExpansion(
@@ -215,34 +244,6 @@ class BuildableStructTests: XCTestCase {
 
                 func build() -> MyObject {
                     return MyObject(
-                    )
-                }
-            }
-            """,
-            macros: testMacros
-        )
-    }
-
-    func test_should_set_default_to_nil_for_implicitly_unwrapped_optional() {
-        assertMacroExpansion(
-            """
-            @Buildable
-            struct MyObject {
-                let m1: String!
-            }
-            """,
-            expandedSource: """
-
-            struct MyObject {
-                let m1: String!
-            }
-
-            struct MyObjectBuilder {
-                var m1: String!
-
-                func build() -> MyObject {
-                    return MyObject(
-                        m1: m1
                     )
                 }
             }
@@ -315,7 +316,51 @@ class BuildableStructTests: XCTestCase {
         )
     }
 
-    func test_should_add_escaping_keyword_to_function_types() {
+    func test_should_ignore_members_with_accessors() {
+        assertMacroExpansion(
+            """
+            @Buildable
+            struct MyObject {
+                let m1: String
+                var m2: String {
+                    get {
+                        m1
+                    }
+                    set {
+                        m1 = newValue
+                    }
+                }
+            }
+            """,
+            expandedSource: """
+
+            struct MyObject {
+                let m1: String
+                var m2: String {
+                    get {
+                        m1
+                    }
+                    set {
+                        m1 = newValue
+                    }
+                }
+            }
+
+            struct MyObjectBuilder {
+                var m1: String = ""
+
+                func build() -> MyObject {
+                    return MyObject(
+                        m1: m1
+                    )
+                }
+            }
+            """,
+            macros: testMacros
+        )
+    }
+
+    func test_should_set_default_value_for_closures() {
         assertMacroExpansion(
             """
             @Buildable
@@ -358,7 +403,7 @@ class BuildableStructTests: XCTestCase {
         )
     }
 
-    func test_should_set_correct_default_values_for_defined_types() {
+    func test_should_set_default_value_for_defined_types() {
         assertMacroExpansion(
             """
             @Buildable
