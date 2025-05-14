@@ -30,7 +30,7 @@ let person = PersonBuilder(age: 42).build()
 import Buildable
 
 @Buildable
-struct Person {
+struct Person: Sendable {
     let name: String
     let age: Int
     let address: Address
@@ -46,10 +46,10 @@ struct Person {
 
 @Buildable
 enum Season {
-    case .winter
-    case .spring
-    case .summer
-    case .autumn
+    case winter
+    case spring
+    case summer
+    case autumn
 }
 
 @Buildable
@@ -69,7 +69,7 @@ let appState = AppStateBuilder(persons: [max]).build()
 ```
 Expanded macro
 ```swift
-struct PersonBuilder {
+struct PersonBuilder : Sendable {
     var name: String = ""
     var age: Int = 0
     var address: Address = AddressBuilder().build()
@@ -123,7 +123,7 @@ The library can be installed using Swift Package Manager.
     ```
 - If a class or a struct has one or more initialisers, the macro will use the first/top one
 - For structs without an initialiser, the macro makes a best guess to decide how the implicit memberwise initializer could look like. This best guess might fail for declarations that have not been considered during implementation of the macro
-- As of Swift 6.0.3 and Xcode 16.2 (01.03.2025) it is not possible to use the generated builders inside the SwiftUI `#Preview` closure
+- As of Swift 6.1.0 and Xcode 16.3 (14.05.2025) it is not possible to use the generated builders inside the SwiftUI `#Preview` closure
 
 ## Builder default values
 The list of default values is limited to the values specified in the below table. 
