@@ -8,8 +8,11 @@
 import SwiftSyntax
 
 func generateBuilderFromStruct(structDecl: StructDeclSyntax) -> StructDeclSyntax {
-    let structMembers = getStructMembers(structDecl: structDecl)
-    return makeStructBuilder(withStructName: structDecl.name, and: structMembers)
+    makeStructBuilder(
+        structName: structDecl.name,
+        inheritanceClause: structDecl.inheritanceClause,
+        structMembers: getStructMembers(structDecl: structDecl)
+    )
 }
 
 private func getStructMembers(structDecl: StructDeclSyntax) -> [StructMember] {

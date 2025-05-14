@@ -433,6 +433,36 @@ class BuildableStructTests: XCTestCase {
         )
     }
 
+    func test_should_make_struct_sendable() {
+        assertMacroExpansion(
+            """
+            @Buildable
+            struct MyObject: Sendable {
+                let m1: () -> String
+            }
+            """,
+            expandedSource: """
+
+            struct MyObject: Sendable {
+                let m1: () -> String
+            }
+
+            struct MyObjectBuilder : Sendable {
+                var m1: () -> String = {
+                    return ""
+                }
+
+                func build() -> MyObject {
+                    return MyObject(
+                        m1: m1
+                    )
+                }
+            }
+            """,
+            macros: testMacros
+        )
+    }
+
     func test_should_set_default_value_for_defined_types() {
         assertMacroExpansion(
             """

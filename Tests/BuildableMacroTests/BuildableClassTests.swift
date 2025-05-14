@@ -180,5 +180,46 @@ class BuildableClassTests: XCTestCase {
             macros: testMacros
         )
     }
+
+    func test_should_make_class_sendable() {
+        assertMacroExpansion(
+            """
+            @Buildable
+            class MyClass: Sendable {
+                let m1: String
+
+                init(
+                    m1: String = ""
+                ) {
+                    self.m1 = m1
+                }
+            }
+            """,
+            expandedSource: """
+
+            class MyClass: Sendable {
+                let m1: String
+
+                init(
+                    m1: String = ""
+                ) {
+                    self.m1 = m1
+                }
+            }
+
+            struct MyClassBuilder : Sendable {
+                var m1: String = ""
+
+                func build() -> MyClass {
+                    return MyClass(
+                        m1: m1
+                    )
+                }
+            }
+
+            """,
+            macros: testMacros
+        )
+    }
 }
 

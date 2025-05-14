@@ -13,8 +13,11 @@ func generateBuilderFromEnum(enumDecl: EnumDeclSyntax) throws -> StructDeclSynta
         type: TypeSyntax(stringLiteral: enumDecl.name.text),
         value: try getFirstEnumCaseName(from: enumDecl)
     )
-    
-    return StructDeclSyntax(name: getStructBuilderName(from: enumDecl.name)) {
+
+    return StructDeclSyntax(
+        name: getStructBuilderName(from: enumDecl.name),
+        inheritanceClause: getSendableInheritanceClause(original: enumDecl.inheritanceClause)
+    ) {
         MemberBlockItemListSyntax {
             MemberBlockItemSyntax(decl: makeVariableDeclWithValue(enumMember: enumMember))
             MemberBlockItemSyntax(

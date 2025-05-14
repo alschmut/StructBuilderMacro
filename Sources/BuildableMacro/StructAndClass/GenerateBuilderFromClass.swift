@@ -11,7 +11,9 @@ func generateBuilderFromClass(classDecl: ClassDeclSyntax) throws -> StructDeclSy
     guard let initialiserDecl = getFirstInitialiser(from: classDecl.memberBlock) else {
         throw "Missing initialiser"
     }
-    let structMembers = extractInitializerMembers(from: initialiserDecl)
-
-    return makeStructBuilder(withStructName: classDecl.name, and: structMembers)
+    return makeStructBuilder(
+        structName: classDecl.name,
+        inheritanceClause: classDecl.inheritanceClause,
+        structMembers: extractInitializerMembers(from: initialiserDecl)
+    )
 }

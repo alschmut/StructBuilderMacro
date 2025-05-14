@@ -45,8 +45,8 @@ enum MyEnum {
 }
 
 @Buildable
-class MyClass {
-    var m1: String = ""
+final class MyClass: Sendable {
+    let m1: String
 
     init(
         m1: String

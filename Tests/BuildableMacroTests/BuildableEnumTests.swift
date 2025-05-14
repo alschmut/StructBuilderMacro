@@ -147,5 +147,32 @@ class BuildableEnumTests: XCTestCase {
             macros: testMacros
         )
     }
+
+    func test_should_make_enum_sendable() {
+        assertMacroExpansion(
+            """
+            @Buildable
+            enum MyEnum: Sendable {
+                case myCase
+            }
+            """,
+            expandedSource: """
+
+            enum MyEnum: Sendable {
+                case myCase
+            }
+
+            struct MyEnumBuilder : Sendable {
+                var value: MyEnum = .myCase
+
+                func build() -> MyEnum {
+                    return value
+                }
+            }
+
+            """,
+            macros: testMacros
+        )
+    }
 }
 

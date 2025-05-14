@@ -7,8 +7,15 @@
 
 import SwiftSyntax
 
-func makeStructBuilder(withStructName structName: TokenSyntax, and structMembers: [StructMember]) -> StructDeclSyntax {
-    StructDeclSyntax(name: getStructBuilderName(from: structName)) {
+func makeStructBuilder(
+    structName: TokenSyntax,
+    inheritanceClause: InheritanceClauseSyntax?,
+    structMembers: [StructMember]
+) -> StructDeclSyntax {
+    StructDeclSyntax(
+        name: getStructBuilderName(from: structName),
+        inheritanceClause: getSendableInheritanceClause(original: inheritanceClause)
+    ) {
         MemberBlockItemListSyntax {
             for structMember in structMembers {
                 MemberBlockItemSyntax(decl: makeVariableDecl(structMember: structMember))
